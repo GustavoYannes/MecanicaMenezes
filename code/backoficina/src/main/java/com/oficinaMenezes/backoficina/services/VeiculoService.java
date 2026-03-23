@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.oficinaMenezes.backoficina.dtos.CreateEntradaDTO;
-import com.oficinaMenezes.backoficina.models.Cliente;
-import com.oficinaMenezes.backoficina.models.Veiculo;
+import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
+import com.oficinaMenezes.backoficina.models.entities.Cliente;
+import com.oficinaMenezes.backoficina.models.entities.Veiculo;
 import com.oficinaMenezes.backoficina.repositories.ClienteRepository;
 import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 
@@ -36,7 +36,7 @@ public class VeiculoService {
             data.cor(),
             data.km(),
             clienteVerificado
-            
+
         );
         return veiculoRepository.save(veiculo);
     }

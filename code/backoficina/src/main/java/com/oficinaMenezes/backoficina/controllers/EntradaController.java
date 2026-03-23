@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.oficinaMenezes.backoficina.dtos.CreateEntradaDTO;
-import com.oficinaMenezes.backoficina.models.Entrada;
+import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
+import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.services.EntradaService;
 
 import java.net.URI;
@@ -24,7 +24,7 @@ public class EntradaController {
         this.entradaService = entradaService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Entrada> criarEntrada(@RequestBody CreateEntradaDTO data) {
         Entrada newEntrada = entradaService.criarEntrada(data);
         URI location = ServletUriComponentsBuilder

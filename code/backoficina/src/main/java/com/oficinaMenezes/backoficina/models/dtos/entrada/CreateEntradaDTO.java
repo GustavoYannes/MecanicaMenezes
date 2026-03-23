@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.dtos;
+package com.oficinaMenezes.backoficina.models.dtos.entrada;
 
 public record CreateEntradaDTO(
     String placa, 

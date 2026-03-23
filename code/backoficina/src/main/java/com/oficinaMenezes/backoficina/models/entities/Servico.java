@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,4 +27,6 @@ public class Servico {
     private BigDecimal valor;
     @ManyToOne
     private Funcionario funcionario;
+
+    public Servico(){}
 }

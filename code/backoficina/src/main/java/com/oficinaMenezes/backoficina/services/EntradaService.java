@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.oficinaMenezes.backoficina.dtos.CreateEntradaDTO;
-import com.oficinaMenezes.backoficina.models.Entrada;
-import com.oficinaMenezes.backoficina.models.Veiculo;
+import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
+import com.oficinaMenezes.backoficina.models.entities.Entrada;
+import com.oficinaMenezes.backoficina.models.entities.Veiculo;
 import com.oficinaMenezes.backoficina.repositories.EntradaRepository;
 import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 

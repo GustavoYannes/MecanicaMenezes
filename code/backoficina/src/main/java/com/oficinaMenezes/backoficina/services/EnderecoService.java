@@ -2,8 +2,8 @@ package com.oficinaMenezes.backoficina.services;
 
 import org.springframework.stereotype.Service;
 
-import com.oficinaMenezes.backoficina.dtos.CreateEntradaDTO;
-import com.oficinaMenezes.backoficina.models.Endereco;
+import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
+import com.oficinaMenezes.backoficina.models.entities.Endereco;
 import com.oficinaMenezes.backoficina.repositories.EnderecoRepository;
 
 @Service

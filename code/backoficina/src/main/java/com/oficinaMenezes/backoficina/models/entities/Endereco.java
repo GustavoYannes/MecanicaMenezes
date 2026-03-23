@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +25,8 @@ public class Endereco {
     private int cep;
     @Column(name = "estado", nullable = false)
     private String estado;
+
+    public Endereco(){}
 
     public Endereco(String cidade, String bairro, String rua, String numero, int cep, String estado) {
         this.cidade = cidade;

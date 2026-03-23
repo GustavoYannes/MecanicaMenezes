@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import java.time.LocalDate;
 

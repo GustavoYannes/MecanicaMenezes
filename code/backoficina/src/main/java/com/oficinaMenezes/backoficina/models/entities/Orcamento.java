@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,10 +20,12 @@ public class Orcamento {
     @Column(name = "nome_gerente", nullable = false)
     private  String nomeGerente;
     @OneToOne
-    private  Entrada entrada;
+    private Entrada entrada;
     @Column(name = "valor_total", nullable = false)
     private  BigDecimal valorTotal;
     @Column(name = "data_geracao", nullable = false)
     private  LocalDateTime dataGeracao;
+
+    public Orcamento(){}
     
 }

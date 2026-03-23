@@ -2,8 +2,8 @@ package com.oficinaMenezes.backoficina.services;
 
 import org.springframework.stereotype.Service;
 
-import com.oficinaMenezes.backoficina.dtos.CreateEntradaDTO;
-import com.oficinaMenezes.backoficina.models.Cliente;
+import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
+import com.oficinaMenezes.backoficina.models.entities.Cliente;
 import com.oficinaMenezes.backoficina.repositories.ClienteRepository;
 
 @Service
@@ -24,7 +24,7 @@ public class ClienteService {
             data.telefone(),
             data.email(),
             enderecoService.criarEndereco(data)
-            
+
 
         );
         return clienteRepository.save(cliente);
