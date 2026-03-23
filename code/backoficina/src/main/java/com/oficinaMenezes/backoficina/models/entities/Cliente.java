@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,5 +20,16 @@ public class Cliente {
     private String email;
     @ManyToOne
     private Endereco endereco;
+
+    public Cliente() {
+    }   
+
+    public Cliente (String cpf, String nomeCompleto, String telefone, String email, Endereco endereco){
+        this.cpf = cpf;
+        this.nomeCompleto = nomeCompleto;
+        this.telefone = telefone;
+        this.email = email;
+        this.endereco = endereco;
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import java.time.LocalDate;
 
@@ -23,5 +23,17 @@ public class Entrada {
     private LocalDate dataEntrada;
     @Column(name = "data_saida")
     private LocalDate dataSaida;
+
+    public Entrada() {
+    }
+
+    public Entrada(Veiculo veiculo){
+        this.veiculo = veiculo;
+        this.dataEntrada = LocalDate.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.oficinaMenezes.backoficina.models;
+package com.oficinaMenezes.backoficina.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,5 +23,17 @@ public class Veiculo {
     private int km;
     @ManyToOne
     private Cliente cliente;
+
+    public Veiculo() {
+    }
+
+    public Veiculo(String placa, String modelo, int ano, String cor, int km, Cliente cliente) {
+        this.placa = placa;
+        this.modelo = modelo;
+        this.ano = ano;
+        this.cor = cor;
+        this.km = km;
+        this.cliente = cliente;
+    }
 
 }
