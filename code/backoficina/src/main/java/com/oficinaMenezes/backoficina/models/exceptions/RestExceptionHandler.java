@@ -4,6 +4,8 @@ import com.oficinaMenezes.backoficina.models.dtos.exception.ErrorMessageDTO;
 import com.oficinaMenezes.backoficina.models.dtos.exception.ListErrorMessageDTO;
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioJaExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioNaoCadastrado;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -67,6 +69,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newError);
+
+    }
+
+    @ExceptionHandler(VeiculoEmAtendimentoException.class)
+    private ResponseEntity<ErrorMessageDTO> veiculoEmAtendimentoHandler(VeiculoEmAtendimentoException ex) {
+        ErrorMessageDTO newError = new ErrorMessageDTO(
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(newError);
     }
 
 }

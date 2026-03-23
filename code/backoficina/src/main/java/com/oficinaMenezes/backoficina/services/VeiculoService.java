@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
 import com.oficinaMenezes.backoficina.models.entities.Cliente;
 import com.oficinaMenezes.backoficina.models.entities.Veiculo;
+import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
 import com.oficinaMenezes.backoficina.repositories.ClienteRepository;
 import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 
@@ -14,28 +15,45 @@ import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 public class VeiculoService {
     private ClienteService clienteService;
     private VeiculoRepository veiculoRepository;
-    private ClienteRepository clienteRepository; 
+    private ClienteRepository clienteRepository;
 
-    public VeiculoService(VeiculoRepository veiculoRepository, ClienteRepository clienteRepository, ClienteService clienteService) {
+    public VeiculoService(VeiculoRepository veiculoRepository, ClienteRepository clienteRepository,
+            ClienteService clienteService) {
         this.veiculoRepository = veiculoRepository;
         this.clienteRepository = clienteRepository;
         this.clienteService = clienteService;
     }
-    
-    public Veiculo criarVeiculo(CreateEntradaDTO data){
+
+    public Veiculo verificarVeiculo(CreateEntradaDTO data) {
+        Veiculo veiculoJaCriado = new Veiculo();
+        Optional<Veiculo> veiculo = veiculoRepository.findById(data.placa());
+        if (veiculo.isEmpty()) {
+            veiculoJaCriado = criarVeiculo(data);
+            return veiculoJaCriado;
+        }
+        veiculoJaCriado = veiculo.get();
+        if(veiculoJaCriado.getStatus() == EStatusVeiculo.CONCLUIDO){
+          veiculoJaCriado.novaEntrada();
+        }
+
+        return veiculoJaCriado;
+        
+    }
+
+    public Veiculo criarVeiculo(CreateEntradaDTO data) {
         Cliente clienteVerificado = new Cliente();
         Optional<Cliente> cliente = clienteRepository.findById(data.cpf());
-        if(cliente.isEmpty()){
-            clienteVerificado=clienteService.criarCliente(data);
+        if (cliente.isEmpty()) {
+            clienteVerificado = clienteService.criarCliente(data);
         }
-          clienteVerificado = cliente.get();
+        clienteVerificado = cliente.get();
         Veiculo veiculo = new Veiculo(
-            data.placa(),
-            data.modelo(),
-            data.ano(),
-            data.cor(),
-            data.km(),
-            clienteVerificado
+                data.placa(),
+                data.modelo(),
+                data.ano(),
+                data.cor(),
+                data.km(),
+                clienteVerificado
 
         );
         return veiculoRepository.save(veiculo);

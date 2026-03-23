@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
 import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.models.entities.Veiculo;
+import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
 import com.oficinaMenezes.backoficina.repositories.EntradaRepository;
 import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 
@@ -23,13 +25,14 @@ public class EntradaService {
     }
 
     public Entrada criarEntrada(CreateEntradaDTO data){
-        Veiculo veiculoVerificado = new Veiculo();
+        Veiculo veiculoJaCriado = new Veiculo();
         Optional<Veiculo> veiculo = veiculoRepository.findById(data.placa());
-        if(veiculo.isEmpty()){
-            veiculoVerificado = veiculoService.criarVeiculo(data);
+        
+        if(veiculoJaCriado.getStatus() != EStatusVeiculo.CONCLUIDO){
+            throw new VeiculoEmAtendimentoException();
         }
         Entrada entrada = new Entrada(
-            veiculoVerificado
+            veiculoJaCriado
         );
 
         return entradaRepository.save(entrada);
