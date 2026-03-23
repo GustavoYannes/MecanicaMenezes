@@ -24,4 +24,16 @@ public class Entrada {
     @Column(name = "data_saida")
     private LocalDate dataSaida;
 
+    public Entrada() {
+    }
+
+    public Entrada(Veiculo veiculo){
+        this.veiculo = veiculo;
+        this.dataEntrada = LocalDate.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
 }

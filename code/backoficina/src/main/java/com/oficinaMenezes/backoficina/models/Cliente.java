@@ -21,4 +21,15 @@ public class Cliente {
     @ManyToOne
     private Endereco endereco;
 
+    public Cliente() {
+    }   
+
+    public Cliente (String cpf, String nomeCompleto, String telefone, String email, Endereco endereco){
+        this.cpf = cpf;
+        this.nomeCompleto = nomeCompleto;
+        this.telefone = telefone;
+        this.email = email;
+        this.endereco = endereco;
+    }
+
 }

@@ -24,4 +24,16 @@ public class Veiculo {
     @ManyToOne
     private Cliente cliente;
 
+    public Veiculo() {
+    }
+
+    public Veiculo(String placa, String modelo, int ano, String cor, int km, Cliente cliente) {
+        this.placa = placa;
+        this.modelo = modelo;
+        this.ano = ano;
+        this.cor = cor;
+        this.km = km;
+        this.cliente = cliente;
+    }
+
 }
