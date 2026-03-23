@@ -1,16 +1,22 @@
 package com.oficinaMenezes.backoficina.models.exceptions;
 
 import com.oficinaMenezes.backoficina.models.dtos.exception.ErrorMessageDTO;
+import com.oficinaMenezes.backoficina.models.dtos.exception.ListErrorMessageDTO;
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioJaExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioNaoCadastrado;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -40,6 +46,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now().toString()
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(newError);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .toList();
+
+        ListErrorMessageDTO newError = new ListErrorMessageDTO(
+                errors,
+                LocalDateTime.now().toString()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newError);
     }
 
 }
