@@ -2,6 +2,8 @@ package com.oficinaMenezes.backoficina.services;
 
 import com.oficinaMenezes.backoficina.models.dtos.auth.RegistrarFuncionarioDTO;
 import com.oficinaMenezes.backoficina.models.entities.Gerente;
+import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioJaExisteException;
+import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioNaoCadastrado;
 import com.oficinaMenezes.backoficina.repositories.FuncionarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,12 +22,14 @@ public class AuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cpf) throws UsernameNotFoundException {
-        return funcionarioRepository.findByCpf(cpf);
+        UserDetails findUser = funcionarioRepository.findByCpf(cpf);
+        if (findUser == null) throw new UsuarioNaoCadastrado();
+        return findUser;
     }
 
     public Gerente registrarGerente(RegistrarFuncionarioDTO data) {
 
-        if (this.funcionarioRepository.findByCpf(data.cpf()) != null) return null;
+        if (this.funcionarioRepository.findByCpf(data.cpf()) != null) throw new UsuarioJaExisteException();
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
 
         Gerente gerente = new Gerente(
