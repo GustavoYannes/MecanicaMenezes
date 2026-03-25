@@ -8,6 +8,23 @@ jobs:
   build-and-test:
     # Use the latest Ubuntu runner for a consistent Linux build environment
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        # Start an official PostgreSQL container for the integration test environment
+        image: postgres:latest
+        env:
+          # Create the application database and credentials inside the PostgreSQL container
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: OficinaMenezes
+        ports:
+          # Expose PostgreSQL on localhost:5432 for the GitHub Actions runner
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d OficinaMenezes"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     defaults:
       run:
         # Run shell commands from the Spring Boot project's working directory
@@ -28,4 +45,9 @@ jobs:
 
       # Build the Spring Boot project and run the full Maven test suite
       - name: Build and test with Maven
+        env:
+          # Override datasource settings so Spring Boot connects to the PostgreSQL service
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/OficinaMenezes
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: root
         run: mvn clean install --batch-mode --no-transfer-progress
