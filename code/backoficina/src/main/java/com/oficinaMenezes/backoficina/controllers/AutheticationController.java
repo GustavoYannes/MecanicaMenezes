@@ -6,6 +6,7 @@ import com.oficinaMenezes.backoficina.models.dtos.auth.LoginResponseDTO;
 import com.oficinaMenezes.backoficina.models.dtos.auth.RegistrarFuncionarioDTO;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.services.AuthenticationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("api/auth")
+@Tag(name = "Auth")
 public class AutheticationController {
 
     private AuthenticationManager authenticationManager;
