@@ -6,20 +6,19 @@ import com.oficinaMenezes.backoficina.models.dtos.auth.LoginResponseDTO;
 import com.oficinaMenezes.backoficina.models.dtos.auth.RegistrarFuncionarioDTO;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.services.AuthenticationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
 @RestController
 @RequestMapping("api/auth")
+@Tag(name = "Auth")
 public class AutheticationController {
 
     private AuthenticationManager authenticationManager;
@@ -51,10 +50,11 @@ public class AutheticationController {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(funcionario.getCpf())
+                .buildAndExpand(funcionario.getUuid())
                 .toUri();
 
         return ResponseEntity.created(location).body(funcionario);
     }
+
 
 }

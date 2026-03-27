@@ -9,12 +9,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "funcionario")
 @Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
 public class Funcionario implements UserDetails {
+
     @Id
+    @GeneratedValue
+    protected UUID uuid;
+    @Column(unique = true, nullable = false)
     protected String cpf;
     @Column(name = "nome", nullable = false)
     protected String nome;
@@ -38,9 +43,14 @@ public class Funcionario implements UserDetails {
         this.senha = senha;
     }
 
-    public String getCpf() {
-        return cpf;
+    public UUID getUuid(){
+        return uuid;
     }
+
+    public String getNome(){
+        return nome;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
