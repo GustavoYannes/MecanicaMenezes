@@ -23,7 +23,8 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("oficina-api")
-                    .withSubject(funcionario.getCpf())
+                    .withSubject(funcionario.getUuid().toString())
+                    .withClaim("nome", funcionario.getNome())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;

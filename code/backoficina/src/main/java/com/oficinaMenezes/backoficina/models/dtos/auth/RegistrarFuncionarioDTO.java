@@ -1,6 +1,7 @@
 package com.oficinaMenezes.backoficina.models.dtos.auth;
 
 import com.oficinaMenezes.backoficina.models.validations.interfaces.CPF;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -15,7 +16,11 @@ public record RegistrarFuncionarioDTO(
 
         @NotBlank(message = "O nome é obrigatório.")
         String nome,
+
+        @Email
+        @NotBlank(message = "O nome é obrigatório.")
         String email,
+        
         String telefone
 ) {
 }
