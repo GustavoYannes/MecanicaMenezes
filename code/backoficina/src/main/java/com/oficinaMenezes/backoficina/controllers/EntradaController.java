@@ -8,6 +8,8 @@ import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
 import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.services.EntradaService;
 
+import jakarta.validation.Valid;
+
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class EntradaController {
     }
 
     @PostMapping
-    public ResponseEntity<Entrada> criarEntrada(@RequestBody CreateEntradaDTO data) {
+    public ResponseEntity<Entrada> criarEntrada(@RequestBody @Valid CreateEntradaDTO data) {
         Entrada newEntrada = entradaService.criarEntrada(data);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

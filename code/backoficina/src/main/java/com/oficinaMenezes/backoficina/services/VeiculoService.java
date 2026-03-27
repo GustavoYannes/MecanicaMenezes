@@ -8,52 +8,55 @@ import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
 import com.oficinaMenezes.backoficina.models.entities.Cliente;
 import com.oficinaMenezes.backoficina.models.entities.Veiculo;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
-import com.oficinaMenezes.backoficina.repositories.ClienteRepository;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
+
 import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 
 @Service
 public class VeiculoService {
     private ClienteService clienteService;
     private VeiculoRepository veiculoRepository;
-    private ClienteRepository clienteRepository;
+   
 
-    public VeiculoService(VeiculoRepository veiculoRepository, ClienteRepository clienteRepository,
+    public VeiculoService(VeiculoRepository veiculoRepository,  
             ClienteService clienteService) {
         this.veiculoRepository = veiculoRepository;
-        this.clienteRepository = clienteRepository;
         this.clienteService = clienteService;
     }
 
-    public Veiculo verificarVeiculo(CreateEntradaDTO data) {
-        Veiculo veiculoJaCriado = new Veiculo();
-        Optional<Veiculo> veiculo = veiculoRepository.findById(data.placa());
-        if (veiculo.isEmpty()) {
-            veiculoJaCriado = criarVeiculo(data);
-            return veiculoJaCriado;
+    public Veiculo verificarVeiculo(Veiculo veiculo) {
+        if(veiculo.getStatus() == EStatusVeiculo.CONCLUIDO){
+          veiculo.novaEntrada();
         }
-        veiculoJaCriado = veiculo.get();
-        if(veiculoJaCriado.getStatus() == EStatusVeiculo.CONCLUIDO){
-          veiculoJaCriado.novaEntrada();
+        if(veiculo.getStatus() == EStatusVeiculo.EM_PROGRESSO){
+            throw new VeiculoEmAtendimentoException();
+        }
+        if(veiculo.getStatus() == EStatusVeiculo.ESPERA){
+            throw new VeiculoEmAtendimentoException();
         }
 
-        return veiculoJaCriado;
+        return veiculoRepository.save(veiculo);
         
     }
 
-    public Veiculo criarVeiculo(CreateEntradaDTO data) {
-        Cliente clienteVerificado = new Cliente();
-        Optional<Cliente> cliente = clienteRepository.findById(data.cpf());
-        if (cliente.isEmpty()) {
-            clienteVerificado = clienteService.criarCliente(data);
+    public Veiculo buscarVeiculo(CreateEntradaDTO data) {
+        Optional<Veiculo> veiculo = veiculoRepository.findById(data.placa());
+        if (veiculo.isEmpty()) {
+            return criarVeiculo(data);
         }
-        clienteVerificado = cliente.get();
+        return verificarVeiculo(veiculo.get());
+    }
+
+    public Veiculo criarVeiculo(CreateEntradaDTO data) {
+       Cliente cliente = clienteService.buscarCliente(data);
+       
         Veiculo veiculo = new Veiculo(
                 data.placa(),
                 data.modelo(),
                 data.ano(),
                 data.cor(),
                 data.km(),
-                clienteVerificado
+                cliente
 
         );
         return veiculoRepository.save(veiculo);
