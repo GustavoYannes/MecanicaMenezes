@@ -1,5 +1,7 @@
 package com.oficinaMenezes.backoficina.services;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
@@ -28,6 +30,14 @@ public class ClienteService {
 
         );
         return clienteRepository.save(cliente);
+    }
+
+    public Cliente buscarCliente(CreateEntradaDTO data){
+       Optional<Cliente> cliente = clienteRepository.findById(data.cpf());
+       if(cliente.isEmpty()){
+        return criarCliente(data);
+       }
+       return cliente.get();
     }
     
 }

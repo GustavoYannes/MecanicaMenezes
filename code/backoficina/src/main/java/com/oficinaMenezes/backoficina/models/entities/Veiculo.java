@@ -1,7 +1,10 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
@@ -23,6 +26,9 @@ public class Veiculo {
     private int km;
     @ManyToOne
     private Cliente cliente;
+    @Column(name = "status")
+    @Enumerated(jakarta.persistence.EnumType.STRING)
+    private EStatusVeiculo status;
 
     public Veiculo() {
     }
@@ -33,7 +39,15 @@ public class Veiculo {
         this.ano = ano;
         this.cor = cor;
         this.km = km;
+        this.status = EStatusVeiculo.ESPERA;
         this.cliente = cliente;
     }
 
+    public EStatusVeiculo getStatus() {
+        return status;
+    }
+
+    public EStatusVeiculo novaEntrada() {
+        return this.status = EStatusVeiculo.ESPERA;
+    }
 }
