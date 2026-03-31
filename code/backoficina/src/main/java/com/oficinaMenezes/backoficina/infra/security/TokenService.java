@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 @Service
 public class TokenService {
@@ -48,6 +49,21 @@ public class TokenService {
 
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    }
+
+    public UUID getUuidFromToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            String subject = JWT.require(algorithm)
+                    .withIssuer("oficina-api")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+
+            return UUID.fromString(subject);
+        } catch (JWTVerificationException exception) {
+            return null;
+        }
     }
 
 }

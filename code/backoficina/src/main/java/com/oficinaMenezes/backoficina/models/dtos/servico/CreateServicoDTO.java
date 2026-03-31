@@ -4,7 +4,6 @@ public record CreateServicoDTO(
         String nome,
         int quantidade,
         double valor,
-        String cpfFuncionario,
         Long idEntrada
 ) {
 }

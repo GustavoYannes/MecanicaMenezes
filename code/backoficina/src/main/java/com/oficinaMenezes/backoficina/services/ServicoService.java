@@ -10,6 +10,7 @@ import com.oficinaMenezes.backoficina.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class ServicoService {
@@ -26,13 +27,13 @@ public class ServicoService {
         this.veiculoService = veiculoService;
     }
 
-    public Servico criarServico(CreateServicoDTO data){
+    public Servico criarServico(CreateServicoDTO data, UUID idFuncionario){
         Entrada entrada = entradaService.entradaExiste(data.idEntrada());
         if (entrada == null) {throw new EntradaNaoExisteException();}
         if (primeiroServicoEntrada(entrada)) {veiculoService.primeiroServico(entrada.getVeiculo());}
 
 
-        Funcionario funcionario = funcionarioService.findByCpf(data.cpfFuncionario());
+        Funcionario funcionario = funcionarioService.findByUUID(idFuncionario);
         if (funcionario == null) {throw new FuncionarioNaoExiste();}
         Servico newServico = new Servico(
                 funcionario,

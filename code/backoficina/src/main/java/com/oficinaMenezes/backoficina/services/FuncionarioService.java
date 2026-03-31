@@ -4,6 +4,8 @@ import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.repositories.FuncionarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class FuncionarioService {
 
@@ -13,8 +15,8 @@ public class FuncionarioService {
         this.funcionarioRepository = funcionarioRepository;
     }
 
-    public Funcionario findByCpf(String cpf) {
-        return funcionarioRepository.findByCpf(cpf);
+    public Funcionario findByUUID(UUID id) {
+        return funcionarioRepository.findById(id).orElse(null);
     }
 
 }
