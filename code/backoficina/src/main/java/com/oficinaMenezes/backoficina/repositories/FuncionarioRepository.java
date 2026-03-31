@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface FuncionarioRepository extends JpaRepository<Funcionario, UUID> {
 
-    UserDetails findByCpf(String cpf);
+    Funcionario findByCpf(String cpf);
     UserDetails findByUuid(UUID id);
 
 }

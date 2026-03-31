@@ -50,4 +50,9 @@ public class Veiculo {
     public EStatusVeiculo novaEntrada() {
         return this.status = EStatusVeiculo.ESPERA;
     }
+
+    public EStatusVeiculo PrimeiroServico(){
+        return this.status = EStatusVeiculo.EM_PROGRESSO;
+    }
+
 }

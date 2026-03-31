@@ -61,4 +61,10 @@ public class VeiculoService {
         );
         return veiculoRepository.save(veiculo);
     }
+
+    public EStatusVeiculo primeiroServico(Veiculo veiculo){
+        veiculo.PrimeiroServico();
+        veiculoRepository.save(veiculo);
+        return veiculo.getStatus();
+    }
 }

@@ -35,5 +35,6 @@ public class Entrada {
     public Long getId() {
         return id;
     }
+    public Veiculo getVeiculo() {return veiculo;}
 
 }
