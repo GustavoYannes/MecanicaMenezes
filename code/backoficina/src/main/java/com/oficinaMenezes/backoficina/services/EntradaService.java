@@ -1,5 +1,8 @@
 package com.oficinaMenezes.backoficina.services;
 
+import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
 import org.springframework.stereotype.Service;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
@@ -32,5 +35,17 @@ public class EntradaService {
     public Entrada entradaExiste(Long entradaId){
         Optional<Entrada> entrada = entradaRepository.findById(entradaId);
         return entrada.orElse(null);
+    }
+
+    public Entrada finalizarEntrada(Long entradaId){
+        Optional<Entrada> entrada = entradaRepository.findById(entradaId);
+        if (entrada.isEmpty()) throw new EntradaNaoExisteException();
+        Entrada finalEntrada = entrada.get();
+
+        if (finalEntrada.getStatus() == EStatusEntrada.FECHADA) throw new EntradaJaFinalizada();
+
+        veiculoService.liberarVeiculo(finalEntrada.getVeiculo());
+        finalEntrada.finalizarEntrada();
+        return entradaRepository.save(finalEntrada);
     }
 }

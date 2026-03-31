@@ -55,4 +55,8 @@ public class Veiculo {
         return this.status = EStatusVeiculo.EM_PROGRESSO;
     }
 
+    public EStatusVeiculo liberarVeiculo(){
+        return this.status = EStatusVeiculo.CONCLUIDO;
+    }
+
 }

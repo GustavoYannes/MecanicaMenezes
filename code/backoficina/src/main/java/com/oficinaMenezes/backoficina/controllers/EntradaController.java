@@ -1,7 +1,6 @@
 package com.oficinaMenezes.backoficina.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
@@ -13,8 +12,6 @@ import jakarta.validation.Valid;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -35,6 +32,12 @@ public class EntradaController {
                 .buildAndExpand(newEntrada.getId())
                 .toUri();
         return ResponseEntity.created(location).body(newEntrada);
+    }
+
+    @PatchMapping("/liberarVeiculo")
+    public ResponseEntity<Entrada> finalizarEntrada(@RequestParam Long idEntrada){
+        Entrada entrada = entradaService.finalizarEntrada(idEntrada);
+        return ResponseEntity.ok(entrada);
     }
     
 }
