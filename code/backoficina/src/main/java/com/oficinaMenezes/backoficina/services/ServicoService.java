@@ -6,29 +6,32 @@ import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
+import com.oficinaMenezes.backoficina.repositories.EntradaRepository;
 import com.oficinaMenezes.backoficina.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ServicoService {
 
     private ServicoRepository servicoRepository;
-    private EntradaService entradaService;
+    private EntradaRepository entradaRepository;
     private FuncionarioService funcionarioService;
     private VeiculoService veiculoService;
 
-    public ServicoService(ServicoRepository servicoRepository, EntradaService entradaService, FuncionarioService funcionarioService, VeiculoService veiculoService) {
+    public ServicoService(ServicoRepository servicoRepository, EntradaRepository entradaRepository, FuncionarioService funcionarioService, VeiculoService veiculoService) {
         this.servicoRepository = servicoRepository;
-        this.entradaService = entradaService;
+        this.entradaRepository = entradaRepository;
         this.funcionarioService = funcionarioService;
         this.veiculoService = veiculoService;
     }
 
     public Servico criarServico(CreateServicoDTO data, UUID idFuncionario){
-        Entrada entrada = entradaService.entradaExiste(data.idEntrada());
+        Entrada entrada = entradaRepository.findById(data.idEntrada())
+                .orElseThrow(EntradaNaoExisteException::new);
         if (entrada == null) {throw new EntradaNaoExisteException();}
         if (primeiroServicoEntrada(entrada)) {veiculoService.primeiroServico(entrada.getVeiculo());}
 
@@ -48,6 +51,8 @@ public class ServicoService {
     public Boolean primeiroServicoEntrada(Entrada entrada){
         return !servicoRepository.existsByEntrada(entrada);
     }
+
+    public List<Servico> servicoPorEntrada(Long entradaId) {return servicoRepository.findByEntradaId(entradaId);}
 
 
 }

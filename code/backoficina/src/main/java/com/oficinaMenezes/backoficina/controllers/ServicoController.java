@@ -27,7 +27,7 @@ public class ServicoController {
     }
 
     @PostMapping()
-    public ResponseEntity<Servico> novoSerico(@RequestBody @Valid CreateServicoDTO data, @RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<Servico> novoServico(@RequestBody @Valid CreateServicoDTO data, @RequestHeader("Authorization") String authorizationHeader){
         String token = authorizationHeader.replace("Bearer ", "");
         UUID uuid = tokenService.getUuidFromToken(token);
         Servico newServico = servicoService.criarServico(data, uuid);

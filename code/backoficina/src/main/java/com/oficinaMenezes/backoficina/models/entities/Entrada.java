@@ -2,6 +2,7 @@ package com.oficinaMenezes.backoficina.models.entities;
 
 import java.time.LocalDate;
 
+import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
 import jakarta.persistence.*;
 
@@ -41,6 +42,13 @@ public class Entrada {
     public void finalizarEntrada(){
         this.status = EStatusEntrada.FECHADA;
         this.dataSaida = LocalDate.now();
+    }
+
+    public OrcamentoPDFDto gerarOrcamento(OrcamentoPDFDto orcamento){
+        orcamento.setDataEntrada(this.dataEntrada);
+        orcamento.setDataSaida(this.dataSaida);
+        veiculo.gerarOrcamento(orcamento);
+        return orcamento;
     }
 
 }

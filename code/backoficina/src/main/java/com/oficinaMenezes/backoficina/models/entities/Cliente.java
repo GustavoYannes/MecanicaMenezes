@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -30,6 +31,11 @@ public class Cliente {
         this.telefone = telefone;
         this.email = email;
         this.endereco = endereco;
+    }
+
+    public OrcamentoPDFDto gerarOrcamentoPDF(OrcamentoPDFDto orcamento){
+        orcamento.setNomeCliente(this.nomeCompleto);
+        return orcamento;
     }
 
 }

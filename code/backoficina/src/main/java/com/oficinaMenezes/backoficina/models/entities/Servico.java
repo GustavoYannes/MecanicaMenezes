@@ -42,4 +42,6 @@ public class Servico {
     }
 
     public Long getId() {return id;}
+    public BigDecimal getValor() {return valor;}
+    public String getNome() {return nome;}
 }

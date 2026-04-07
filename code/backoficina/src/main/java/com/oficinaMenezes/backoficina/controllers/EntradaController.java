@@ -1,5 +1,7 @@
 package com.oficinaMenezes.backoficina.controllers;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -38,6 +40,16 @@ public class EntradaController {
     public ResponseEntity<Entrada> finalizarEntrada(@RequestParam Long idEntrada){
         Entrada entrada = entradaService.finalizarEntrada(idEntrada);
         return ResponseEntity.ok(entrada);
+    }
+
+    @GetMapping("/gerarPDF")
+    public ResponseEntity<byte[]> gerarPDF(@RequestParam Long idEntrada){
+        byte[] pdf = entradaService.gerarPdf(idEntrada);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=orcamento-" + idEntrada + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
     
 }
