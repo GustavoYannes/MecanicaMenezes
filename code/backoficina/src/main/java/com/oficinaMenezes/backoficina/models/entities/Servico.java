@@ -27,6 +27,21 @@ public class Servico {
     private BigDecimal valor;
     @ManyToOne
     private Funcionario funcionario;
+    @ManyToOne
+    private Entrada entrada;
 
     public Servico(){}
+
+    public Servico(Funcionario funcionario, Entrada entrada, String nome, int quantidade, BigDecimal valor) {
+        this.funcionario = funcionario;
+        this.entrada = entrada;
+        this.nome = nome;
+        this.quantidade = quantidade;
+        this.valor = valor;
+        this.data = LocalDate.now();
+    }
+
+    public Long getId() {return id;}
+    public BigDecimal getValor() {return valor;}
+    public String getNome() {return nome;}
 }

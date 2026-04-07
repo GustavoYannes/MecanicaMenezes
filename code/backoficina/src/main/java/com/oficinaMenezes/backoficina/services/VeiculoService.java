@@ -25,18 +25,17 @@ public class VeiculoService {
     }
 
     public Veiculo verificarVeiculo(Veiculo veiculo) {
-        if(veiculo.getStatus() == EStatusVeiculo.CONCLUIDO){
-          veiculo.novaEntrada();
-        }
         if(veiculo.getStatus() == EStatusVeiculo.EM_PROGRESSO){
             throw new VeiculoEmAtendimentoException();
         }
         if(veiculo.getStatus() == EStatusVeiculo.ESPERA){
             throw new VeiculoEmAtendimentoException();
         }
+        if(veiculo.getStatus() == EStatusVeiculo.CONCLUIDO){
+            veiculo.novaEntrada();
+        }
 
         return veiculoRepository.save(veiculo);
-        
     }
 
     public Veiculo buscarVeiculo(CreateEntradaDTO data) {
@@ -60,5 +59,17 @@ public class VeiculoService {
 
         );
         return veiculoRepository.save(veiculo);
+    }
+
+    public EStatusVeiculo primeiroServico(Veiculo veiculo){
+        veiculo.PrimeiroServico();
+        veiculoRepository.save(veiculo);
+        return veiculo.getStatus();
+    }
+
+    public EStatusVeiculo liberarVeiculo(Veiculo veiculo){
+        EStatusVeiculo status = veiculo.liberarVeiculo();
+        veiculoRepository.save(veiculo);
+        return status;
     }
 }

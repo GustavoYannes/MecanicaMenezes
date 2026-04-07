@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
 
 import jakarta.persistence.Column;
@@ -50,4 +51,22 @@ public class Veiculo {
     public EStatusVeiculo novaEntrada() {
         return this.status = EStatusVeiculo.ESPERA;
     }
+
+    public EStatusVeiculo PrimeiroServico(){
+        return this.status = EStatusVeiculo.EM_PROGRESSO;
+    }
+
+    public EStatusVeiculo liberarVeiculo(){
+        return this.status = EStatusVeiculo.CONCLUIDO;
+    }
+
+    public OrcamentoPDFDto gerarOrcamento(OrcamentoPDFDto orcamento) {
+        orcamento.setPlaca(this.placa);
+        orcamento.setModelo(this.modelo);
+        orcamento.setAno(this.ano);
+        orcamento.setKm(this.km);
+        cliente.gerarOrcamentoPDF(orcamento);
+        return orcamento;
+    }
+
 }
