@@ -40,11 +40,6 @@ public class EntradaService {
         return entradaRepository.save(entrada);
     }
 
-    public Entrada entradaExiste(Long entradaId){
-        Optional<Entrada> entrada = entradaRepository.findById(entradaId);
-        return entrada.orElse(null);
-    }
-
     public Entrada finalizarEntrada(Long entradaId){
         Optional<Entrada> entrada = entradaRepository.findById(entradaId);
         if (entrada.isEmpty()) throw new EntradaNaoExisteException();
@@ -61,6 +56,7 @@ public class EntradaService {
         OrcamentoPDFDto orcamento = new OrcamentoPDFDto();
         Optional<Entrada> entrada = entradaRepository.findById(entradaId);
         if (entrada.isEmpty()) throw new EntradaNaoExisteException();
+        if (entrada.get().getStatus() != EStatusEntrada.FECHADA) throw new EntradaNaoExisteException("O serviço ainda está em andamento. Finalize para gerar o PDF.");
 
         List<Servico> servicos = servicoService.servicoPorEntrada(entradaId);
         if (!servicos.isEmpty()) orcamento.setServicos(servicos);
@@ -73,7 +69,7 @@ public class EntradaService {
         List<Servico> servicos = servicoService.servicoPorEntrada(entradaId);
         BigDecimal valorTotal = BigDecimal.ZERO;
         for (Servico servico : servicos) {
-            valorTotal = valorTotal.add(servico.getValor());
+            valorTotal = valorTotal.add(servico.valorTotal());
         }
         return valorTotal;
     }

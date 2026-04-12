@@ -1,7 +1,5 @@
 package com.oficinaMenezes.backoficina.services;
 
-
-
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -16,7 +14,6 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
-import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +22,6 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
 
 @Service
 public class PDFService {
@@ -38,7 +34,7 @@ public class PDFService {
             Document document = new Document(pdfDocument);
 
             // Cores
-            DeviceRgb corPrincipal = new DeviceRgb(102, 192, 193); // azul claro parecido com a imagem
+            DeviceRgb corPrincipal = new DeviceRgb(102, 192, 193);
             DeviceRgb corTextoEscuro = new DeviceRgb(40, 40, 40);
             DeviceRgb corCinzaClaro = new DeviceRgb(245, 245, 245);
             DeviceRgb corLinha = new DeviceRgb(220, 220, 220);
@@ -56,8 +52,7 @@ public class PDFService {
             Table cabecalho = new Table(UnitValue.createPercentArray(new float[]{2, 2}))
                     .useAllAvailableWidth();
 
-            Cell esquerda = new Cell()
-                    .setBorder(Border.NO_BORDER);
+            Cell esquerda = new Cell().setBorder(Border.NO_BORDER);
 
             esquerda.add(new Paragraph("MECÂNICA\nMENEZES")
                     .setFontSize(22)
@@ -80,8 +75,7 @@ public class PDFService {
                     .setFontSize(9)
                     .setFontColor(ColorConstants.DARK_GRAY));
 
-            direita.add(new Paragraph(" ")
-                    .setMarginBottom(5));
+            direita.add(new Paragraph(" ").setMarginBottom(5));
 
             direita.add(new Paragraph("ORÇAMENTO")
                     .setFontSize(13)
@@ -91,7 +85,6 @@ public class PDFService {
             cabecalho.addCell(direita);
 
             document.add(cabecalho);
-
             document.add(new Paragraph(" ").setMarginBottom(8));
 
             // =========================
@@ -134,7 +127,7 @@ public class PDFService {
             // =========================
             // TABELA DE SERVIÇOS
             // =========================
-            Table tabela = new Table(UnitValue.createPercentArray(new float[]{4, 2}))
+            Table tabela = new Table(UnitValue.createPercentArray(new float[]{4, 1.5f, 2, 2}))
                     .useAllAvailableWidth();
 
             tabela.addHeaderCell(
@@ -147,7 +140,25 @@ public class PDFService {
 
             tabela.addHeaderCell(
                     new Cell()
-                            .add(new Paragraph("VALOR"))
+                            .add(new Paragraph("QTD"))
+                            .setBackgroundColor(corPrincipal)
+                            .setFontColor(ColorConstants.WHITE)
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setBorder(Border.NO_BORDER)
+            );
+
+            tabela.addHeaderCell(
+                    new Cell()
+                            .add(new Paragraph("VALOR UNIT."))
+                            .setBackgroundColor(corPrincipal)
+                            .setFontColor(ColorConstants.WHITE)
+                            .setTextAlignment(TextAlignment.RIGHT)
+                            .setBorder(Border.NO_BORDER)
+            );
+
+            tabela.addHeaderCell(
+                    new Cell()
+                            .add(new Paragraph("TOTAL"))
                             .setBackgroundColor(corPrincipal)
                             .setFontColor(ColorConstants.WHITE)
                             .setTextAlignment(TextAlignment.RIGHT)
@@ -169,7 +180,17 @@ public class PDFService {
 
                     tabela.addCell(
                             new Cell()
-                                    .add(new Paragraph(moeda.format(servico.getValor())))
+                                    .add(new Paragraph(String.valueOf(servico.getQuantidade())))
+                                    .setTextAlignment(TextAlignment.CENTER)
+                                    .setBorderBottom(new SolidBorder(corLinha, 1))
+                                    .setBorderTop(Border.NO_BORDER)
+                                    .setBorderLeft(Border.NO_BORDER)
+                                    .setBorderRight(Border.NO_BORDER)
+                    );
+
+                    tabela.addCell(
+                            new Cell()
+                                    .add(new Paragraph(moeda.format(servico.getValorUnidade())))
                                     .setTextAlignment(TextAlignment.RIGHT)
                                     .setBorderBottom(new SolidBorder(corLinha, 1))
                                     .setBorderTop(Border.NO_BORDER)
@@ -177,11 +198,21 @@ public class PDFService {
                                     .setBorderRight(Border.NO_BORDER)
                     );
 
-                    total = total.add(servico.getValor());
+                    tabela.addCell(
+                            new Cell()
+                                    .add(new Paragraph(moeda.format(servico.valorTotal())))
+                                    .setTextAlignment(TextAlignment.RIGHT)
+                                    .setBorderBottom(new SolidBorder(corLinha, 1))
+                                    .setBorderTop(Border.NO_BORDER)
+                                    .setBorderLeft(Border.NO_BORDER)
+                                    .setBorderRight(Border.NO_BORDER)
+                    );
+
+                    total = total.add(servico.valorTotal());
                 }
             } else {
                 tabela.addCell(
-                        new Cell(1, 2)
+                        new Cell(1, 4)
                                 .add(new Paragraph("Nenhum serviço cadastrado."))
                                 .setTextAlignment(TextAlignment.CENTER)
                                 .setFontColor(ColorConstants.GRAY)
@@ -224,9 +255,9 @@ public class PDFService {
                     .setFontColor(corPrincipal)
                     .setFontSize(10));
 
-            totalCell.add(new Paragraph(moeda.format(
-                    entrada.getValorTotal() != null ? entrada.getValorTotal() : total))
-                    .setFontSize(16)
+            totalCell.add(new Paragraph(
+                    moeda.format(entrada.getValorTotal() != null ? entrada.getValorTotal() : total)
+            ).setFontSize(16)
                     .setFontColor(corTextoEscuro));
 
             rodapeInfo.addCell(datasCell);

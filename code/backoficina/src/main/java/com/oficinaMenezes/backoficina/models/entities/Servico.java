@@ -42,6 +42,8 @@ public class Servico {
     }
 
     public Long getId() {return id;}
-    public BigDecimal getValor() {return valor;}
+    public int getQuantidade(){return quantidade;}
+    public BigDecimal getValorUnidade() {return valor;}
     public String getNome() {return nome;}
+    public BigDecimal valorTotal() {return valor.multiply(BigDecimal.valueOf(quantidade));}
 }

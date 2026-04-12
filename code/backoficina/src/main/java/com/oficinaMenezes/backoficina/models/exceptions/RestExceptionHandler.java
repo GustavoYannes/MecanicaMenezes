@@ -6,6 +6,7 @@ import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioJaExisteExce
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioNaoCadastrado;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoFoiFechada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
 
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
@@ -109,6 +110,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now().toString()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(newError);
+    }
+
+    @ExceptionHandler(EntradaNaoFoiFechada.class)
+    private ResponseEntity<ErrorMessageDTO> funcionarioNaoExiste(EntradaNaoFoiFechada ex){
+        ErrorMessageDTO newError = new ErrorMessageDTO(
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newError);
     }
 
 }
