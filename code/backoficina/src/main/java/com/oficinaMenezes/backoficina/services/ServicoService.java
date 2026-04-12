@@ -4,6 +4,8 @@ import com.oficinaMenezes.backoficina.models.dtos.servico.CreateServicoDTO;
 import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
+import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
+import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
 import com.oficinaMenezes.backoficina.repositories.EntradaRepository;
@@ -34,6 +36,7 @@ public class ServicoService {
                 .orElseThrow(EntradaNaoExisteException::new);
         if (entrada == null) {throw new EntradaNaoExisteException();}
         if (primeiroServicoEntrada(entrada)) {veiculoService.primeiroServico(entrada.getVeiculo());}
+        if (entrada.getStatus() == EStatusEntrada.FECHADA) throw new EntradaJaFinalizada();
 
 
         Funcionario funcionario = funcionarioService.findByUUID(idFuncionario);
