@@ -1,7 +1,10 @@
 package com.oficinaMenezes.backoficina.services;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.oficinaMenezes.backoficina.models.dtos.Cliente.ClienteResponse;
+import com.oficinaMenezes.backoficina.models.specifications.ClienteSpec;
 import org.springframework.stereotype.Service;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
@@ -38,6 +41,10 @@ public class ClienteService {
         return criarCliente(data);
        }
        return cliente.get();
+    }
+
+    public List<Cliente> buscarTodosClientes(String nomeCompleto){
+        return clienteRepository.findAll(ClienteSpec.nomeCompletoContains(nomeCompleto));
     }
     
 }

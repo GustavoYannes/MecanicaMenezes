@@ -38,4 +38,8 @@ public class Cliente {
         return orcamento;
     }
 
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
 }
