@@ -53,7 +53,7 @@ public class Veiculo {
     }
 
     public EStatusVeiculo PrimeiroServico(){
-        return this.status = EStatusVeiculo.EM_PROGRESSO;
+        return this.status = EStatusVeiculo.EMPROGRESSO;
     }
 
     public EStatusVeiculo liberarVeiculo(){
