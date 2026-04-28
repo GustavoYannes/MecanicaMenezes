@@ -3,7 +3,7 @@ package com.oficinaMenezes.backoficina.models.entities.enums;
 public enum EStatusVeiculo {
 
     ESPERA("EM_ESPERA"),
-    EM_PROGRESSO("EM_PROGRESSO"),
+    EMPROGRESSO("EMPROGRESSO"),
     CONCLUIDO("CONCLUIDO");
 
     private String status;

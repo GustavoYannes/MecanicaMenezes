@@ -1,15 +1,17 @@
 package com.oficinaMenezes.backoficina.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
 import com.oficinaMenezes.backoficina.models.entities.Cliente;
 import com.oficinaMenezes.backoficina.models.entities.Veiculo;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
-
+import com.oficinaMenezes.backoficina.models.specifications.VeiculoSpec;
 import com.oficinaMenezes.backoficina.repositories.VeiculoRepository;
 
 @Service
@@ -25,7 +27,7 @@ public class VeiculoService {
     }
 
     public Veiculo verificarVeiculo(Veiculo veiculo) {
-        if(veiculo.getStatus() == EStatusVeiculo.EM_PROGRESSO){
+        if(veiculo.getStatus() == EStatusVeiculo.EMPROGRESSO){
             throw new VeiculoEmAtendimentoException();
         }
         if(veiculo.getStatus() == EStatusVeiculo.ESPERA){
@@ -71,5 +73,11 @@ public class VeiculoService {
         EStatusVeiculo status = veiculo.liberarVeiculo();
         veiculoRepository.save(veiculo);
         return status;
+    }
+
+    public List<Veiculo> findAll(List<EStatusVeiculo> statusVeiculo){
+
+        return veiculoRepository.findAll(VeiculoSpec.statusConstains(statusVeiculo));
+        
     }
 }
