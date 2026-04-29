@@ -13,6 +13,7 @@ public class OrcamentoPDFDto {
         private int km;
 
         private String nomeCliente;
+        private String cpfCliente;
 
         private LocalDate dataEntrada;
         private LocalDate dataSaida;
@@ -25,6 +26,9 @@ public class OrcamentoPDFDto {
 
         public String getPlaca() { return placa; }
         public void setPlaca(String placa) { this.placa = placa; }
+
+        public String getCpfCliente() { return cpfCliente; }
+        public void setCpfCliente(String cpfCliente) { this.cpfCliente = cpfCliente; }
 
         public String getModelo() { return modelo; }
         public void setModelo(String modelo) { this.modelo = modelo; }

@@ -1,11 +1,14 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.Cliente.ListClienteDTO;
 import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cliente")
@@ -33,13 +36,21 @@ public class Cliente {
         this.endereco = endereco;
     }
 
+    public String getNomeCompleto(){return nomeCompleto;}
+    public String getCpf() {return cpf;}
+
     public OrcamentoPDFDto gerarOrcamentoPDF(OrcamentoPDFDto orcamento){
         orcamento.setNomeCliente(this.nomeCompleto);
+        orcamento.setCpfCliente(this.cpf);
         return orcamento;
     }
 
-    public String getNomeCompleto() {
-        return nomeCompleto;
+    public ListClienteDTO listClientes(BigDecimal valorTotalGasto){
+        return new ListClienteDTO(
+                this.nomeCompleto,
+                this.cpf,
+                valorTotalGasto
+        );
     }
 
 }
