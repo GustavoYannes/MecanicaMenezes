@@ -1,6 +1,7 @@
 package com.oficinaMenezes.backoficina.services;
 
 import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
+import com.oficinaMenezes.backoficina.models.entities.Orcamento;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
@@ -23,12 +24,14 @@ public class EntradaService {
     private VeiculoService veiculoService;
     private PDFService pdfService;
     private ServicoService servicoService;
+    private OrcamentoService orcamentoService;
 
-    public EntradaService(EntradaRepository entradaRepository, VeiculoService veiculoService, PDFService pdfService, ServicoService servicoService) {
+    public EntradaService(EntradaRepository entradaRepository, VeiculoService veiculoService, PDFService pdfService, ServicoService servicoService, OrcamentoService orcamentoService) {
         this.entradaRepository = entradaRepository;
         this.veiculoService = veiculoService;
         this.pdfService = pdfService;
         this.servicoService = servicoService;
+        this.orcamentoService = orcamentoService;
     }
 
     public Entrada criarEntrada(CreateEntradaDTO data){
@@ -62,6 +65,7 @@ public class EntradaService {
         if (!servicos.isEmpty()) orcamento.setServicos(servicos);
         orcamento.setValorTotal(valorTotalEntrada(entradaId));
         entrada.get().gerarOrcamento(orcamento);
+        orcamentoService.createOrcamento(orcamento, entrada.get());
         return pdfService.gerarOrcamentoPdf(orcamento);
     }
 
