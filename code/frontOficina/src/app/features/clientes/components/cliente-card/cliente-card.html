@@ -1,0 +1,21 @@
+<div class="bg-brand-surface rounded-xl shadow-sm border border-brand-input p-4 mb-4 md:hidden">
+  <div class="flex justify-between items-start mb-2">
+    <div>
+      <h3 class="text-base font-semibold text-brand-primary">{{ cliente.nome }}</h3>
+      <p class="text-sm text-brand-muted mt-1">{{ formatCPF(cliente.CPF) }}</p>
+    </div>
+    <button class="text-brand-muted hover:text-brand-accent focus:outline-none p-1 rounded-full hover:bg-brand-background transition-colors">
+      <!-- Ícone de 3 pontinhos (Ações) -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="1"></circle>
+        <circle cx="19" cy="12" r="1"></circle>
+        <circle cx="5" cy="12" r="1"></circle>
+      </svg>
+    </button>
+  </div>
+  
+  <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+    <span class="text-xs font-medium text-brand-muted uppercase tracking-wider">Total Gasto</span>
+    <span class="text-sm font-semibold text-brand-primary">{{ cliente.totalGasto | currency:'BRL':'symbol':'1.2-2' }}</span>
+  </div>
+</div>

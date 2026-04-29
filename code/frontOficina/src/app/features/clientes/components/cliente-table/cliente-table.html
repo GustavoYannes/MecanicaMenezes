@@ -1,0 +1,45 @@
+<div class="overflow-x-auto rounded-xl border border-[#D5C2B3] shadow-sm hidden md:block">
+  <table class="min-w-full divide-y divide-[#D5C2B3]">
+    <thead class="bg-[#EBDFD7]">
+      <tr>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-brand-primary tracking-wider uppercase">
+          Nome
+        </th>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-brand-primary tracking-wider uppercase">
+          CPF
+        </th>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-brand-primary tracking-wider uppercase">
+          Total Gasto
+        </th>
+        <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-brand-primary tracking-wider uppercase">
+          Ações
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-[#D5C2B3] bg-[#F5ECE5]">
+      @for (cliente of clientes; track cliente.CPF) {
+        <tr class="hover:bg-[#EBE0D8] transition-colors">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-primary">
+            {{ cliente.nome }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">
+            {{ formatCPF(cliente.CPF) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">
+            {{ cliente.totalGasto | currency:'BRL':'symbol':'1.2-2' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button class="text-brand-muted hover:text-brand-accent focus:outline-none rounded-full p-1 hover:bg-brand-background transition-colors">
+              <!-- Ícone de 3 pontinhos (Ações) -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
