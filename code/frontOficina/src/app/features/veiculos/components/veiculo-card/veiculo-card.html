@@ -1,0 +1,23 @@
+<div class="bg-[#F5ECE5] rounded-xl shadow-sm border border-[#D5C2B3] p-4 mb-4 md:hidden">
+  <div class="flex justify-between items-start mb-2">
+    <div>
+      <h3 class="text-base font-semibold text-brand-primary uppercase">{{ veiculo.placa }}</h3>
+      <p class="text-sm text-brand-muted mt-1">{{ veiculo.modelo }}</p>
+    </div>
+    <button class="text-brand-muted hover:text-brand-accent focus:outline-none p-1 rounded-full hover:bg-brand-background transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="1"></circle>
+        <circle cx="19" cy="12" r="1"></circle>
+        <circle cx="5" cy="12" r="1"></circle>
+      </svg>
+    </button>
+  </div>
+  
+  <div class="mt-4 pt-3 border-t border-[#D5C2B3] flex justify-between items-center">
+    <div class="flex flex-col">
+      <span class="text-xs font-medium text-brand-muted uppercase tracking-wider">Ano/Cor</span>
+      <span class="text-sm font-semibold text-brand-primary">{{ veiculo.ano }} • {{ veiculo.cor }}</span>
+    </div>
+    <app-status-badge [status]="veiculo.status"></app-status-badge>
+  </div>
+</div>

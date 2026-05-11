@@ -1,21 +1,17 @@
 package com.oficinaMenezes.backoficina.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.oficinaMenezes.backoficina.models.entities.Veiculo;
+import com.oficinaMenezes.backoficina.models.dtos.veiculo.ListVeiculoResponse;
+import com.oficinaMenezes.backoficina.models.dtos.veiculo.VeiculoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
 import com.oficinaMenezes.backoficina.services.VeiculoService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.List;
-
-
-
 
 @RestController
 @RequestMapping("api/veiculos")
@@ -29,11 +25,20 @@ public class VeiculoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Veiculo>> findAllVeiculos(@RequestParam  (required = false) List<EStatusVeiculo> statusVeiculo) {
-        List<Veiculo> veiculos = veiculoService.findAll(statusVeiculo);
-        return ResponseEntity.ok().body(veiculos);
-    
+    public ResponseEntity<Page<ListVeiculoResponse>> findAllVeiculos(
+            @RequestParam  (required = false) List<EStatusVeiculo> statusVeiculo,
+            @RequestParam  (required = false) String placa,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        return ResponseEntity.ok(
+                veiculoService.findAll(statusVeiculo, placa, page)
+        );
     }
-    
-    
+
+    @GetMapping("/{placa}")
+    public ResponseEntity<VeiculoResponse> findByPlaca(@PathVariable String placa){
+        VeiculoResponse veiculo = veiculoService.findByPlaca(placa);
+        return ResponseEntity.ok().body(veiculo);
+    }
+
 }

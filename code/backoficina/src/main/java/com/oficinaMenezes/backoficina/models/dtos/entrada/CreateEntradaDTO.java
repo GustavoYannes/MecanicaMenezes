@@ -13,6 +13,8 @@ public record CreateEntradaDTO(
     String placa, 
     @NotBlank(message = "O modelo é obrigatório.")
     String modelo,
+    @NotBlank(message = "A marca é obrigatória")
+    String marca,
     int ano,
     int km,
     @NotBlank(message = "A cor é obrigatória.")

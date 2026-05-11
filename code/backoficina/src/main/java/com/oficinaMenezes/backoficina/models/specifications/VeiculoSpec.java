@@ -18,4 +18,13 @@ public class VeiculoSpec {
             return root.get("status").in(statusVeiculo);
         };
     }
+
+    public static Specification<Veiculo> placaConstains(String placa){
+        return (root, query, builder) -> {
+            if(ObjectUtils.isEmpty(placa)){
+                return null;
+            }
+            return builder.like(root.get("placa"), "%" + placa + "%");
+        };
+    }
 }

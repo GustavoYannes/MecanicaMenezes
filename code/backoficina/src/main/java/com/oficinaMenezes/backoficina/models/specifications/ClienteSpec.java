@@ -15,4 +15,13 @@ public class ClienteSpec {
         };
     }
 
+    public static Specification<Cliente> cpfContains(String cpf) {
+        return (root, query, builder) -> {
+            if (ObjectUtils.isEmpty(cpf)) {
+                return null;
+            }
+            return builder.like(root.get("cpf"), "%" + cpf + "%");
+        };
+    }
+
 }

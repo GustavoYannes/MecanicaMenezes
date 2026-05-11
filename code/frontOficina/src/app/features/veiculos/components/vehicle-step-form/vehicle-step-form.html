@@ -1,0 +1,61 @@
+<div class="flex flex-col space-y-6">
+  
+  <div class="space-y-2">
+    <label class="text-sm font-semibold text-brand-text">Veículo Existente (Placa)</label>
+    <app-vehicle-plate-search (vehicleSelected)="onVehicleSelected($event)"></app-vehicle-plate-search>
+    
+    @if (loadingDetails()) {
+      <div class="text-xs text-brand-accent flex items-center mt-1">
+        <svg class="animate-spin -ml-1 mr-2 h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Carregando detalhes...
+      </div>
+    }
+    @if (errorDetails()) {
+      <div class="text-xs text-red-500 mt-1">{{ errorDetails() }}</div>
+    }
+  </div>
+
+  <div class="relative flex py-2 items-center">
+    <div class="flex-grow border-t border-brand-input"></div>
+    <span class="flex-shrink-0 mx-4 text-brand-muted text-xs font-semibold uppercase tracking-wider">OU CRIE UM NOVO VEÍCULO</span>
+    <div class="flex-grow border-t border-brand-input"></div>
+  </div>
+
+  <form [formGroup]="vehicleForm" class="space-y-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1.5">
+        <label class="text-sm font-semibold text-brand-text">Placa</label>
+        <input type="text" formControlName="placa" placeholder="ABC1D23" class="w-full bg-[#F5ECE5] text-brand-text placeholder-brand-muted rounded-xl py-3 px-4 border border-brand-input focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all uppercase">
+      </div>
+      <div class="flex flex-col space-y-1.5">
+        <label class="text-sm font-semibold text-brand-text">Marca</label>
+        <input type="text" formControlName="marca" placeholder="Ex: Toyota" class="w-full bg-[#F5ECE5] text-brand-text placeholder-brand-muted rounded-xl py-3 px-4 border border-brand-input focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1.5">
+        <label class="text-sm font-semibold text-brand-text">Modelo</label>
+        <input type="text" formControlName="modelo" placeholder="Ex: Corolla" class="w-full bg-[#F5ECE5] text-brand-text placeholder-brand-muted rounded-xl py-3 px-4 border border-brand-input focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+      </div>
+      <div class="flex flex-col space-y-1.5">
+        <label class="text-sm font-semibold text-brand-text">Ano</label>
+        <input type="number" formControlName="ano" placeholder="2020" class="w-full bg-[#F5ECE5] text-brand-text placeholder-brand-muted rounded-xl py-3 px-4 border border-brand-input focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col space-y-1.5">
+        <label class="text-sm font-semibold text-brand-text">Cor</label>
+        <input type="text" formControlName="cor" placeholder="Ex: Preto" class="w-full bg-[#F5ECE5] text-brand-text placeholder-brand-muted rounded-xl py-3 px-4 border border-brand-input focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+      </div>
+      <div class="flex flex-col space-y-1.5">
+        <label class="text-sm font-semibold text-brand-text">KM</label>
+        <input type="number" formControlName="km" placeholder="50000" class="w-full bg-[#F5ECE5] text-brand-text placeholder-brand-muted rounded-xl py-3 px-4 border border-brand-input focus:outline-none focus:ring-2 focus:ring-brand-accent transition-all">
+      </div>
+    </div>
+  </form>
+</div>

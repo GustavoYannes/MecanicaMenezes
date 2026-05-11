@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.endereco.EnderecoResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,5 +37,22 @@ public class Endereco {
         this.cep = cep;
         this.estado = estado;
     }
+
+    public EnderecoResponse toEnderecoResponse() {
+        return new EnderecoResponse(
+                this.cidade,
+                this.bairro,
+                this.rua,
+                this.numero,
+                this.cep,
+                this.estado
+        );
+    }
+
+    @Override
+    public String toString() {
+        return rua + ", " + numero + " - " + bairro + ", " + cidade + " - " + estado + ", CEP: " + cep;
+    }
+
 
 }
