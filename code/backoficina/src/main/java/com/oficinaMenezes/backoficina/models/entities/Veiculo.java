@@ -1,6 +1,8 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
 import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
+import com.oficinaMenezes.backoficina.models.dtos.veiculo.ListVeiculoResponse;
+import com.oficinaMenezes.backoficina.models.dtos.veiculo.VeiculoResponse;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusVeiculo;
 
 import jakarta.persistence.Column;
@@ -19,6 +21,8 @@ public class Veiculo {
     private String placa;
     @Column(name = "modelo")
     private String modelo;
+    @Column(name = "marca")
+    private String marca;
     @Column(name = "ano")
     private int ano;
     @Column(name = "cor")
@@ -34,7 +38,7 @@ public class Veiculo {
     public Veiculo() {
     }
 
-    public Veiculo(String placa, String modelo, int ano, String cor, int km, Cliente cliente) {
+    public Veiculo(String placa, String marca, String modelo, int ano, String cor, int km, Cliente cliente) {
         this.placa = placa;
         this.modelo = modelo;
         this.ano = ano;
@@ -67,6 +71,27 @@ public class Veiculo {
         orcamento.setKm(this.km);
         cliente.gerarOrcamentoPDF(orcamento);
         return orcamento;
+    }
+
+    public VeiculoResponse toVeiculoResponse() {
+        return new VeiculoResponse(
+                this.placa,
+                this.marca,
+                this.modelo,
+                this.ano,
+                this.cor,
+                this.km
+        );
+    }
+
+    public ListVeiculoResponse toListVeiculoResponse() {
+        return new ListVeiculoResponse(
+                this.placa,
+                this.modelo,
+                this.ano,
+                this.cor,
+                this.status.getStatus()
+        );
     }
 
 }

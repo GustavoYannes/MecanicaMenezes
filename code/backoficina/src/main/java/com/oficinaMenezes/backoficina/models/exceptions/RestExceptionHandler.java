@@ -4,12 +4,14 @@ import com.oficinaMenezes.backoficina.models.dtos.exception.ErrorMessageDTO;
 import com.oficinaMenezes.backoficina.models.dtos.exception.ListErrorMessageDTO;
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioJaExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.auth.UsuarioNaoCadastrado;
+import com.oficinaMenezes.backoficina.models.exceptions.cliente.ClienteNaoExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoFoiFechada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
 
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
+import com.oficinaMenezes.backoficina.models.exceptions.veiculo.VeiculoNaoExisteException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -119,6 +121,24 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now().toString()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newError);
+    }
+
+    @ExceptionHandler(ClienteNaoExisteException.class)
+    private ResponseEntity<ErrorMessageDTO> clienteNaoExisteHandler(ClienteNaoExisteException ex) {
+        ErrorMessageDTO newError = new ErrorMessageDTO(
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(newError);
+    }
+
+    @ExceptionHandler(VeiculoNaoExisteException.class)
+    private ResponseEntity<ErrorMessageDTO> veiculoNaoExisteHandler(VeiculoNaoExisteException ex) {
+        ErrorMessageDTO newError = new ErrorMessageDTO(
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(newError);
     }
 
 }

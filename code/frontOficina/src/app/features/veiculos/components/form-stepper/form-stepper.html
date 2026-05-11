@@ -1,0 +1,38 @@
+<div class="flex items-center justify-start md:justify-center py-2 mb-8 overflow-x-auto">
+  <!-- Step 1 -->
+  <div class="flex items-center shrink-0">
+    <div 
+      class="flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300"
+      [ngClass]="currentStep >= 1 ? 'bg-[#EC5B13] text-white shadow-sm' : 'bg-brand-input text-brand-muted'"
+    >
+      1
+    </div>
+    <span 
+      class="ml-3 text-sm font-bold transition-colors duration-300"
+      [ngClass]="currentStep >= 1 ? 'text-brand-primary' : 'text-brand-muted'"
+    >
+      Informações do Cliente
+    </span>
+  </div>
+
+  <!-- Line -->
+  <div class="w-12 md:w-24 h-[2px] mx-4 transition-colors duration-300 shrink-0"
+       [ngClass]="currentStep >= 2 ? 'bg-[#EC5B13]' : 'bg-brand-input'">
+  </div>
+
+  <!-- Step 2 -->
+  <div class="flex items-center opacity-60 shrink-0">
+    <div 
+      class="flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300"
+      [ngClass]="currentStep >= 2 ? 'bg-[#EC5B13] text-white shadow-sm' : 'bg-brand-input text-brand-muted'"
+    >
+      2
+    </div>
+    <span 
+      class="ml-3 text-sm font-bold transition-colors duration-300"
+      [ngClass]="currentStep >= 2 ? 'text-brand-primary' : 'text-brand-muted'"
+    >
+      Informações do Veículo
+    </span>
+  </div>
+</div>

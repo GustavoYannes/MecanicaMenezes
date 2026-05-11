@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,12 +22,12 @@ export class LoginComponent {
     senha: ['', [Validators.required, Validators.minLength(4)]]
   });
 
-  loading = false;
-  errorMessage = '';
-  showPassword = false;
+  loading = signal(false);
+  errorMessage = signal('');
+  showPassword = signal(false);
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.update(v => !v);
   }
 
   onSubmit(): void {
@@ -36,8 +36,8 @@ export class LoginComponent {
       return;
     }
 
-    this.loading = true;
-    this.errorMessage = '';
+    this.loading.set(true);
+    this.errorMessage.set('');
 
     // The mask applied on input usually keeps raw value or masked value based on config
     // Assuming ngx-mask is configured to drop special characters, we can remove formatting if needed.
@@ -49,13 +49,13 @@ export class LoginComponent {
 
     this.authService.login({ cpf, senha }).subscribe({
       next: () => {
-        this.loading = false;
+        this.loading.set(false);
         // Navigate somewhere after success
         this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
-        this.loading = false;
-        this.errorMessage = err?.error?.message || 'Falha ao autenticar. Verifique suas credenciais.';
+        this.loading.set(false);
+        this.errorMessage.set(err?.error?.message || 'Falha ao autenticar. Verifique suas credenciais.');
       }
     });
   }

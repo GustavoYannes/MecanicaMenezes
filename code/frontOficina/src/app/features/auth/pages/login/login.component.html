@@ -19,10 +19,11 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-6">
 
         <!-- Error Message -->
-        <div *ngIf="errorMessage"
-          class="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center">
-          {{ errorMessage }}
+        @if (errorMessage()) {
+        <div class="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center">
+          {{ errorMessage() }}
         </div>
+        }
 
         <!-- CPF Field -->
         <div class="flex flex-col space-y-2">
@@ -36,11 +37,14 @@
             </svg>
 
             <input id="cpf" type="text" formControlName="cpf" placeholder="Digite seu CPF" mask="000.000.000-00"
+              autocomplete="off"
               class="w-full bg-brand-input bg-opacity-70 text-brand-text placeholder-brand-muted rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-brand-primary placeholder:text-sm font-medium transition-all">
           </div>
-          <div *ngIf="loginForm.get('cpf')?.touched && loginForm.get('cpf')?.invalid" class="text-xs text-red-500 pl-1">
+          @if (loginForm.get('cpf')?.touched && loginForm.get('cpf')?.invalid) {
+          <div class="text-xs text-red-500 pl-1">
             CPF inválido
           </div>
+          }
         </div>
 
         <!-- Password Field -->
@@ -55,14 +59,15 @@
               </path>
             </svg>
 
-            <input id="senha" [type]="showPassword ? 'text' : 'password'" formControlName="senha"
+            <input id="senha" [type]="showPassword() ? 'text' : 'password'" formControlName="senha"
               placeholder="Insira sua senha"
               class="w-full bg-brand-input bg-opacity-70 text-brand-text placeholder-brand-muted rounded-2xl py-3 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-primary placeholder:text-sm font-medium transition-all">
 
             <!-- Eye Toggle -->
             <button type="button" (click)="togglePasswordVisibility()"
               class="absolute right-4 text-brand-muted hover:text-brand-text transition-colors">
-              <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              @if (showPassword()) {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -70,18 +75,22 @@
                   d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                 </path>
               </svg>
-              <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              }
+              @if (!showPassword()) {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21">
                 </path>
               </svg>
+              }
             </button>
           </div>
-          <div *ngIf="loginForm.get('senha')?.touched && loginForm.get('senha')?.invalid"
-            class="text-xs text-red-500 pl-1">
+          @if (loginForm.get('senha')?.touched && loginForm.get('senha')?.invalid) {
+          <div class="text-xs text-red-500 pl-1">
             A senha é obrigatória
           </div>
+          }
         </div>
 
         <div class="flex justify-start w-full">
@@ -89,17 +98,21 @@
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" [disabled]="loading"
+        <button type="submit" [disabled]="loading()"
           class="w-full bg-brand-primary text-white font-semibold py-3.5 rounded-2xl hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-brand-primary/20 transition-all flex justify-center items-center">
-          <span *ngIf="!loading">Login</span>
+          @if (!loading()) {
+          <span>Login</span>
+          }
           <!-- Loading Spinner -->
-          <svg *ngIf="loading" class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+          @if (loading()) {
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
             viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
             </path>
           </svg>
+          }
         </button>
 
       </form>

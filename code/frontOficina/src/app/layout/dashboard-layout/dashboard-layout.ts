@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { TopNavbar } from '../../shared/components/top-navbar/top-navbar';
+import { VehicleFormModal } from '../../features/veiculos/components/vehicle-form-modal/vehicle-form-modal';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, Sidebar, TopNavbar],
+  imports: [CommonModule, RouterModule, Sidebar, TopNavbar, VehicleFormModal],
   templateUrl: './dashboard-layout.html',
   styles: []
 })

@@ -1,0 +1,18 @@
+<div class="overflow-x-auto rounded-t-xl border border-[#D5C2B3] shadow-sm hidden md:block border-b-0">
+  <table class="min-w-full divide-y divide-[#D5C2B3]">
+    <thead class="bg-[#EBDFD7]">
+      <tr>
+        @for (col of columns; track col; let last = $last) {
+          <th scope="col" 
+              class="px-6 py-4 text-xs font-bold text-brand-primary tracking-wider uppercase"
+              [ngClass]="last ? 'text-right' : 'text-left'">
+            {{ col }}
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-[#D5C2B3] bg-[#F5ECE5]">
+      <ng-content></ng-content>
+    </tbody>
+  </table>
+</div>

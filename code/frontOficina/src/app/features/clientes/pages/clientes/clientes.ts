@@ -2,20 +2,20 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClienteService } from '../../services/cliente';
 import { Cliente } from '../../models/cliente.model';
-import { ClienteSearch } from '../../components/cliente-search/cliente-search';
-import { ClienteTable } from '../../components/cliente-table/cliente-table';
+import { SearchInput } from '../../../../shared/components/search-input/search-input';
+import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { ClienteCard } from '../../components/cliente-card/cliente-card';
-import { ClientePagination } from '../../components/cliente-pagination/cliente-pagination';
+import { Pagination } from '../../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
   imports: [
     CommonModule, 
-    ClienteSearch, 
-    ClienteTable, 
+    SearchInput, 
+    DataTable, 
     ClienteCard, 
-    ClientePagination
+    Pagination
   ],
   templateUrl: './clientes.html',
   styles: ``
@@ -39,6 +39,11 @@ export class Clientes implements OnInit {
 
   ngOnInit() {
     this.loadClientes();
+  }
+
+  formatCPF(cpf: string): string {
+    if (!cpf) return '';
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   }
 
   loadClientes() {

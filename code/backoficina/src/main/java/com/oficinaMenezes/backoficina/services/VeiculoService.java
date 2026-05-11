@@ -3,6 +3,14 @@ package com.oficinaMenezes.backoficina.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.oficinaMenezes.backoficina.models.dtos.veiculo.ListVeiculoResponse;
+import com.oficinaMenezes.backoficina.models.dtos.veiculo.VeiculoResponse;
+import com.oficinaMenezes.backoficina.models.specifications.ClienteSpec;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -53,6 +61,7 @@ public class VeiculoService {
        
         Veiculo veiculo = new Veiculo(
                 data.placa(),
+                data.marca(),
                 data.modelo(),
                 data.ano(),
                 data.cor(),
@@ -75,9 +84,20 @@ public class VeiculoService {
         return status;
     }
 
-    public List<Veiculo> findAll(List<EStatusVeiculo> statusVeiculo){
+    public Page<ListVeiculoResponse> findAll(List<EStatusVeiculo> statusVeiculo, String placa, int page){
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("placa").ascending());
+        Specification<Veiculo> spec = Specification
+                .where(VeiculoSpec.statusConstains(statusVeiculo))
+                .and(VeiculoSpec.placaConstains(placa));
 
-        return veiculoRepository.findAll(VeiculoSpec.statusConstains(statusVeiculo));
-        
+
+        Page<Veiculo> veiculosPage = veiculoRepository.findAll(spec, pageable);
+        return veiculosPage.map(Veiculo::toListVeiculoResponse);
+    }
+
+    public VeiculoResponse findByPlaca(String placa){
+        Veiculo veiculo = veiculoRepository.findByPlaca(placa);
+        if(veiculo == null){throw new VeiculoEmAtendimentoException();}
+        return veiculo.toVeiculoResponse();
     }
 }

@@ -1,14 +1,12 @@
 package com.oficinaMenezes.backoficina.controllers;
 
+import com.oficinaMenezes.backoficina.models.dtos.Cliente.ClienteResponse;
 import com.oficinaMenezes.backoficina.models.dtos.Cliente.ListClienteDTO;
 import com.oficinaMenezes.backoficina.services.ClienteService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -25,11 +23,18 @@ public class ClienteController {
     @GetMapping
     public ResponseEntity<Page<ListClienteDTO>> buscarTodosClientes(
             @RequestParam(required = false) String nomeCompleto,
+            @RequestParam(required = false) String cpf,
             @RequestParam(defaultValue = "0") int page
     ) {
         return ResponseEntity.ok(
-                clienteService.buscarTodosClientes(nomeCompleto, page)
+                clienteService.buscarTodosClientes(cpf, nomeCompleto, page)
         );
+    }
+
+    @GetMapping("/{cpf}")
+    public ResponseEntity<ClienteResponse> buscarClienteCpf(@PathVariable String cpf) {
+        ClienteResponse data = clienteService.buscarClienteCpf(cpf);
+        return ResponseEntity.ok(data);
     }
 
 }

@@ -1,11 +1,38 @@
-<div class="flex items-center space-x-3 cursor-pointer hover:bg-black/5 p-1.5 pr-3 rounded-full transition-colors">
-  <div class="w-9 h-9 rounded-full bg-brand-primary text-white flex items-center justify-center text-sm font-bold shadow-sm">
-    {{ userInitials }}
+<div class="relative">
+  <!-- Trigger -->
+  <div 
+    (click)="toggleDropdown($event)"
+    class="flex items-center space-x-3 cursor-pointer hover:bg-black/5 p-1.5 pr-3 rounded-full transition-colors"
+  >
+    <div class="w-9 h-9 rounded-full bg-brand-primary text-white flex items-center justify-center text-sm font-bold shadow-sm">
+      {{ userInitials() }}
+    </div>
+    <div class="flex flex-col">
+      <span class="text-sm font-bold text-brand-primary leading-tight">{{ userName() }}</span>
+      <span class="text-xs text-brand-muted leading-tight">Mecânico</span>
+    </div>
+    <!-- Chevron -->
+    <svg 
+      class="w-4 h-4 text-brand-muted ml-2 transition-transform duration-200" 
+      [class.rotate-180]="dropdownOpen()"
+      fill="none" stroke="currentColor" viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
   </div>
-  <div class="flex flex-col">
-    <span class="text-sm font-bold text-brand-primary leading-tight">{{ userName }}</span>
-    <span class="text-xs text-brand-muted leading-tight">Mecânico</span>
-  </div>
-  <!-- Chevron -->
-  <svg class="w-4 h-4 text-brand-muted ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+  <!-- Dropdown Menu -->
+  @if (dropdownOpen()) {
+    <div class="absolute right-0 mt-2 w-48 bg-[#F5ECE5] rounded-xl shadow-lg border border-[#D5C2B3] py-1 z-50 origin-top-right transition-all overflow-hidden">
+      <button 
+        (click)="logout()"
+        class="w-full text-left px-4 py-3 text-sm font-medium text-[#EC5B13] hover:bg-[#EBE0D8] cursor-pointer flex items-center space-x-2 transition-colors focus:outline-none"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        <span>Sair do sistema</span>
+      </button>
+    </div>
+  }
 </div>

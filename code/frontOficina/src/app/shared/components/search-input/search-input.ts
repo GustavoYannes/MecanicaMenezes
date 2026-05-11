@@ -1,17 +1,19 @@
-import { Component, EventEmitter, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-cliente-search',
+  selector: 'app-search-input',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './cliente-search.html',
-  styles: ``
+  templateUrl: './search-input.html'
 })
-export class ClienteSearch implements OnInit, OnDestroy {
+export class SearchInput implements OnInit, OnDestroy {
+  @Input() placeholder = 'Buscar...';
+  
   searchControl = new FormControl('');
   @Output() search = new EventEmitter<string>();
+  
   private destroy$ = new Subject<void>();
 
   ngOnInit() {

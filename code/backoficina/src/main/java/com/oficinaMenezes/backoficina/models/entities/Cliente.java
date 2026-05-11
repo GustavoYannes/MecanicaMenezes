@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.Cliente.ClienteResponse;
 import com.oficinaMenezes.backoficina.models.dtos.Cliente.ListClienteDTO;
 import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
 import jakarta.persistence.Column;
@@ -36,13 +37,22 @@ public class Cliente {
         this.endereco = endereco;
     }
 
-    public String getNomeCompleto(){return nomeCompleto;}
     public String getCpf() {return cpf;}
 
     public OrcamentoPDFDto gerarOrcamentoPDF(OrcamentoPDFDto orcamento){
         orcamento.setNomeCliente(this.nomeCompleto);
         orcamento.setCpfCliente(this.cpf);
         return orcamento;
+    }
+
+    public ClienteResponse clienteResponse(){
+        return new ClienteResponse(
+                this.nomeCompleto,
+                this.email,
+                this.cpf,
+                this.telefone,
+                this.endereco.toEnderecoResponse()
+        );
     }
 
     public ListClienteDTO listClientes(BigDecimal valorTotalGasto){
