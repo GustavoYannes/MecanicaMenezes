@@ -24,8 +24,7 @@ public class OrcamentoService {
                 data.getNomeCliente(),
                 data.getCpfCliente(),
                 entrada,
-                data.getValorTotal(),
-                data.getDataSaida()
+                data.getValorTotal()
         );
         return orcamentoRepository.save(orcamento);
     }

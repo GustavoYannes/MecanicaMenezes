@@ -59,7 +59,6 @@ public class EntradaService {
         OrcamentoPDFDto orcamento = new OrcamentoPDFDto();
         Optional<Entrada> entrada = entradaRepository.findById(entradaId);
         if (entrada.isEmpty()) throw new EntradaNaoExisteException();
-        if (entrada.get().getStatus() != EStatusEntrada.FECHADA) throw new EntradaNaoExisteException("O serviço ainda está em andamento. Finalize para gerar o PDF.");
 
         List<Servico> servicos = servicoService.servicoPorEntrada(entradaId);
         if (!servicos.isEmpty()) orcamento.setServicos(servicos);
@@ -76,5 +75,12 @@ public class EntradaService {
             valorTotal = valorTotal.add(servico.valorTotal());
         }
         return valorTotal;
+    }
+
+    public Entrada entradaAbertaVeiculo(String placa){
+        Veiculo veiculo = veiculoService.findByPlaca(placa);
+        Optional<Entrada> entrada = entradaRepository.findByVeiculoAndStatus(veiculo, EStatusEntrada.ABERTA);
+        if (entrada.isEmpty()) throw new EntradaNaoExisteException();
+        return entrada.get();
     }
 }

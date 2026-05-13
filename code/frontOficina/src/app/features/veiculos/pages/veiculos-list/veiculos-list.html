@@ -81,7 +81,7 @@
         <!-- Componente Tabela (Desktop) -->
         <app-data-table [columns]="['Placa', 'Modelo', 'Ano', 'Cor', 'Status', 'Ações']">
           @for (veiculo of veiculos; track veiculo.placa) {
-            <tr class="hover:bg-[#EBE0D8] transition-colors">
+            <tr class="hover:bg-[#EBE0D8] transition-colors cursor-pointer" (click)="viewDetails(veiculo.placa)">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-primary uppercase">
                 {{ veiculo.placa }}
               </td>
@@ -98,7 +98,7 @@
                 <app-status-badge [status]="veiculo.status"></app-status-badge>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button class="text-brand-muted hover:text-brand-accent focus:outline-none rounded-full p-1 hover:bg-brand-background transition-colors">
+                <button (click)="$event.stopPropagation(); viewDetails(veiculo.placa)" class="text-brand-muted hover:text-brand-accent focus:outline-none rounded-full p-1 hover:bg-brand-background transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="1"></circle>
                     <circle cx="19" cy="12" r="1"></circle>
@@ -111,9 +111,11 @@
         </app-data-table>
 
         <!-- Componente Cards (Mobile) -->
-        <div class="md:hidden">
+        <div class="md:hidden space-y-4">
           @for (veiculo of veiculos; track veiculo.placa) {
-            <app-veiculo-card [veiculo]="veiculo"></app-veiculo-card>
+            <div (click)="viewDetails(veiculo.placa)" class="cursor-pointer">
+              <app-veiculo-card [veiculo]="veiculo"></app-veiculo-card>
+            </div>
           }
         </div>
 

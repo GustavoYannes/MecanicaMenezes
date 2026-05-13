@@ -1,0 +1,68 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <!-- Overlay Backdrop with Blur -->
+  <div class="absolute inset-0 bg-brand-primary/40 backdrop-blur-sm transition-opacity" (click)="!isSubmitting ? cancel.emit() : null"></div>
+
+  <!-- Modal Card -->
+  <div class="relative w-full max-w-lg bg-[#EBDFD7] rounded-[2rem] shadow-2xl overflow-hidden flex flex-col">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between px-8 py-6 pb-2">
+      <div class="flex items-center space-x-3 text-red-600">
+        <div class="bg-red-100 p-2.5 rounded-full">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h2 class="text-2xl font-extrabold text-brand-primary font-inter-tight">Atenção!</h2>
+      </div>
+      <button 
+        (click)="cancel.emit()"
+        [disabled]="isSubmitting"
+        class="text-brand-muted hover:text-brand-primary p-2 hover:bg-black/5 rounded-full transition-colors focus:outline-none disabled:opacity-50"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="px-8 py-6">
+      <p class="text-brand-primary text-lg font-medium text-center">
+        Tem certeza que deseja liberar este veículo?
+      </p>
+      <p class="text-brand-muted text-sm text-center mt-2">
+        A entrada será fechada, o status do veículo passará para "Concluído" e você poderá emitir o orçamento em PDF. Esta ação não poderá ser desfeita facilmente.
+      </p>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="px-8 py-5 bg-[#EBE0D8] border-t border-[#D5C2B3] flex justify-between items-center">
+      <button 
+        type="button" 
+        (click)="cancel.emit()"
+        [disabled]="isSubmitting"
+        class="px-6 py-2.5 text-sm font-bold text-brand-primary hover:bg-black/5 rounded-xl transition-colors focus:outline-none disabled:opacity-50"
+      >
+        Cancelar
+      </button>
+      
+      <button 
+        type="button" 
+        (click)="confirm.emit()"
+        [disabled]="isSubmitting"
+        class="px-6 py-2.5 text-sm font-bold text-white bg-[#EC5B13] hover:opacity-90 rounded-xl shadow-md transition-all active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#EC5B13]/20 flex items-center space-x-2 disabled:opacity-70"
+      >
+        @if (isSubmitting) {
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Liberando...</span>
+        } @else {
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <span>Confirmar Liberação</span>
+        }
+      </button>
+    </div>
+
+  </div>
+</div>

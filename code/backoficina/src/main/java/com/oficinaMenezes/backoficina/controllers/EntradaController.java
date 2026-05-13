@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.controllers;
 
+import com.oficinaMenezes.backoficina.models.dtos.entrada.EntradaResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,12 @@ public class EntradaController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=orcamento-" + idEntrada + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdf);
+    }
+
+    @GetMapping("/entrada-aberta")
+    public ResponseEntity<EntradaResponse> entradaPlacaVeiculo(@RequestParam String placaVeiculo){
+        EntradaResponse entrada = entradaService.entradaAbertaVeiculo(placaVeiculo).toEntradaResponse();
+        return ResponseEntity.ok(entrada);
     }
     
 }

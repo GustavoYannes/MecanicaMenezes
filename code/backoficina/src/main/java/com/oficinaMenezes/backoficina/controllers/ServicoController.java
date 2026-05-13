@@ -2,6 +2,7 @@ package com.oficinaMenezes.backoficina.controllers;
 
 import com.oficinaMenezes.backoficina.infra.security.TokenService;
 import com.oficinaMenezes.backoficina.models.dtos.servico.CreateServicoDTO;
+import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoResponse;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
 import com.oficinaMenezes.backoficina.services.ServicoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -40,5 +42,15 @@ public class ServicoController {
                 .buildAndExpand(newServico.getId())
                 .toUri();
         return ResponseEntity.created(location).body(newServico);
+    }
+
+    @GetMapping("/por-entrada")
+    public ResponseEntity<List<ServicoResponse>> listarServicosPorEntrada(@RequestParam Long entradaid){
+        List<Servico> listaServicos = servicoService.servicoPorEntrada(entradaid);
+        List<ServicoResponse> response = listaServicos.stream()
+                .map(Servico::toServicoResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 }

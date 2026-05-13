@@ -1,0 +1,78 @@
+<app-data-table [columns]="['Serviço', 'Data', 'Qtd', 'Valor Un.', 'Total', 'Ações']">
+  @for (servico of servicos; track servico.nome + servico.data) {
+    <tr class="hover:bg-[#EBE0D8] transition-colors border-b border-[#D5C2B3]/30 last:border-0">
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-brand-primary">
+        {{ servico.nome }}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">
+        {{ servico.data | date:'dd/MM/yyyy' }}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">
+        {{ servico.quantidade }}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">
+        {{ servico.valor | currency:'BRL':'symbol':'1.2-2' }}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-brand-accent">
+        {{ servico.valorTotal | currency:'BRL':'symbol':'1.2-2' }}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+        <button (click)="edit.emit(servico)" class="text-brand-muted hover:text-brand-primary transition-colors p-1.5 rounded-full hover:bg-white border border-transparent hover:border-[#D5C2B3]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+        </button>
+        <button (click)="delete.emit(servico)" class="text-brand-muted hover:text-red-600 transition-colors p-1.5 rounded-full hover:bg-red-50 border border-transparent hover:border-red-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </button>
+      </td>
+    </tr>
+  }
+  @empty {
+    <tr>
+      <td colspan="6" class="px-6 py-12 text-center">
+        <svg class="mx-auto h-12 w-12 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-brand-primary">Nenhum serviço</h3>
+        <p class="mt-1 text-sm text-brand-muted">Adicione o primeiro serviço preenchendo o formulário abaixo.</p>
+      </td>
+    </tr>
+  }
+</app-data-table>
+
+<!-- Componente Cards (Mobile) -->
+<div class="md:hidden space-y-4">
+  @for (servico of servicos; track servico.nome + servico.data) {
+    <div class="bg-white rounded-xl shadow-sm border border-[#D5C2B3] p-4 flex flex-col">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <h4 class="font-bold text-brand-primary text-sm">{{ servico.nome }}</h4>
+          <p class="text-xs text-brand-muted">{{ servico.data | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="text-right">
+          <span class="font-bold text-brand-accent text-sm">{{ servico.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="flex justify-between items-end mt-2">
+        <div class="text-xs text-brand-text bg-[#F5ECE5] px-2 py-1 rounded-md border border-[#D5C2B3]/50">
+          <span class="font-bold text-brand-primary">{{ servico.quantidade }}x</span> {{ servico.valor | currency:'BRL':'symbol':'1.2-2' }}
+        </div>
+        <div class="flex space-x-2">
+          <button (click)="edit.emit(servico)" class="p-2 text-brand-muted hover:text-brand-primary bg-brand-background rounded-full border border-transparent hover:border-[#D5C2B3] transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+          </button>
+          <button (click)="delete.emit(servico)" class="p-2 text-brand-muted hover:text-red-600 bg-brand-background rounded-full border border-transparent hover:border-red-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+  @empty {
+    <div class="py-12 text-center bg-[#FDF9F6] rounded-xl border border-dashed border-[#D5C2B3]">
+      <svg class="mx-auto h-10 w-10 text-brand-muted mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+      <h3 class="text-sm font-medium text-brand-primary">Nenhum serviço</h3>
+    </div>
+  }
+</div>

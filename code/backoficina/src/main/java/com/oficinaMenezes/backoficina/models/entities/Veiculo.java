@@ -46,11 +46,14 @@ public class Veiculo {
         this.km = km;
         this.status = EStatusVeiculo.ESPERA;
         this.cliente = cliente;
+        this.marca = marca;
     }
 
     public EStatusVeiculo getStatus() {
         return status;
     }
+
+    public Cliente getDono() {return cliente;}
 
     public EStatusVeiculo novaEntrada() {
         return this.status = EStatusVeiculo.ESPERA;
@@ -80,7 +83,8 @@ public class Veiculo {
                 this.modelo,
                 this.ano,
                 this.cor,
-                this.km
+                this.km,
+                this.cliente.clienteResponse()
         );
     }
 

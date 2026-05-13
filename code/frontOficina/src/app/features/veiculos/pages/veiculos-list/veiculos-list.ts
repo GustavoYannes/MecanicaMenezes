@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { VeiculoService } from '../../services/veiculo.service';
 import { VeiculoListItem } from '../../models/veiculo-list-item.model';
 import { SearchInput } from '../../../../shared/components/search-input/search-input';
@@ -26,6 +27,7 @@ export class VeiculosList implements OnInit {
   private veiculoService = inject(VeiculoService);
   private modalService = inject(VehicleModalService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   veiculos: VeiculoListItem[] = [];
   loading = false;
@@ -86,5 +88,9 @@ export class VeiculosList implements OnInit {
 
   openRegistrarVeiculo() {
     this.modalService.open();
+  }
+
+  viewDetails(placa: string) {
+    this.router.navigate(['/veiculos', placa]);
   }
 }
