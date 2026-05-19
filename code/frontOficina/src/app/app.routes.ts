@@ -24,6 +24,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/veiculos/pages/vehicle-details/vehicle-details').then(m => m.VehicleDetails)
       },
       {
+        path: 'historico-veiculos',
+        loadComponent: () => import('./features/veiculos/pages/historico-veiculos/historico-veiculos').then(m => m.HistoricoVeiculos)
+      },
+      {
+        path: 'historico-veiculos/:placa',
+        loadComponent: () => import('./features/veiculos/pages/vehicle-history-details/vehicle-history-details').then(m => m.VehicleHistoryDetails)
+      },
+      {
         path: 'clientes',
         loadComponent: () => import('./features/clientes/pages/clientes/clientes').then(m => m.Clientes)
       },

@@ -21,6 +21,13 @@ export class EntradaService {
     return this.http.get<EntradaAberta>(`${this.API_URL}/entrada-aberta`, { params });
   }
 
+  getEntradasPorVeiculo(placaVeiculo: string, page: number = 0): Observable<any> {
+    const params = new HttpParams()
+      .set('placaVeiculo', placaVeiculo)
+      .set('page', page.toString());
+    return this.http.get<any>(`${this.API_URL}/entrada-por-veiculo`, { params });
+  }
+
   liberarVeiculo(idEntrada: number): Observable<any> {
     const params = new HttpParams().set('idEntrada', idEntrada.toString());
     return this.http.patch(`${this.API_URL}/liberarVeiculo`, {}, { params });

@@ -12,12 +12,15 @@ export class VeiculoService {
   private http = inject(HttpClient);
   private readonly API_URL = `${environment.apiUrl}/api/veiculos`;
 
-  findAllVeiculos(page: number = 0, placa?: string): Observable<VeiculoPage> {
-    let params = new HttpParams()
-      .append('statusVeiculo', 'ESPERA')
-      .append('statusVeiculo', 'EMPROGRESSO')
-      .append('page', page.toString());
+  findAllVeiculos(page: number = 0, placa?: string, statusVeiculo?: string[]): Observable<VeiculoPage> {
+    let params = new HttpParams().append('page', page.toString());
       
+    if (statusVeiculo && statusVeiculo.length > 0) {
+      statusVeiculo.forEach(status => {
+        params = params.append('statusVeiculo', status);
+      });
+    }
+
     if (placa && placa.trim().length > 0) {
       params = params.append('placa', placa.trim());
     }
