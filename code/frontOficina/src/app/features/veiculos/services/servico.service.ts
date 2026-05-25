@@ -20,4 +20,8 @@ export class ServicoService {
   createServico(payload: ServicoCreateRequest): Observable<any> {
     return this.http.post(this.API_URL, payload);
   }
+
+  editarServico(servicoId: number, data: any): Observable<any> {
+    return this.http.put(`${this.API_URL}/${servicoId}`, data);
+  }
 }

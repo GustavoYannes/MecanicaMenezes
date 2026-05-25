@@ -3,6 +3,7 @@ package com.oficinaMenezes.backoficina.models.entities;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.oficinaMenezes.backoficina.models.dtos.servico.EditarServicoDTO;
 import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoResponse;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,11 +51,19 @@ public class Servico {
 
     public ServicoResponse toServicoResponse() {
         return new ServicoResponse(
+                this.id,
                 this.nome,
                 this.data,
                 this.quantidade,
                 this.valor,
                 valorTotal()
         );
+    }
+
+    public Servico editarServico(EditarServicoDTO data){
+        this.valor = BigDecimal.valueOf(data.valor());
+        this.quantidade = data.quantidade();
+        this.nome = data.nome();
+        return this;
     }
 }

@@ -19,6 +19,8 @@ import { ServicesTable } from '../../components/services-table/services-table';
 import { TotalSummary } from '../../components/total-summary/total-summary';
 import { ServiceForm } from '../../components/service-form/service-form';
 import { ReleaseVehicleModal } from '../../components/release-vehicle-modal/release-vehicle-modal';
+import { EditServiceModal } from '../../components/edit-service-modal/edit-service-modal';
+import { EditarServicoRequest } from '../../models/editar-servico-request.model';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -30,7 +32,8 @@ import { ReleaseVehicleModal } from '../../components/release-vehicle-modal/rele
     ServicesTable,
     TotalSummary,
     ServiceForm,
-    ReleaseVehicleModal
+    ReleaseVehicleModal,
+    EditServiceModal
   ],
   templateUrl: './vehicle-details.html'
 })
@@ -54,6 +57,12 @@ export class VehicleDetails implements OnInit {
 
   showServiceForm = signal(false);
   isSubmittingService = signal(false);
+
+  // Edit Service State
+  showEditModal = signal(false);
+  isEditingService = signal(false);
+  editSuccess = signal(false);
+  selectedServico = signal<Servico | null>(null);
 
   // Release and PDF States
   showReleaseModal = signal(false);
@@ -139,8 +148,41 @@ export class VehicleDetails implements OnInit {
   }
 
   onEditService(servico: Servico) {
-    console.log('Editar serviço', servico);
-    alert('Funcionalidade de edição em breve.');
+    if (!servico.id) {
+      alert('Não é possível editar este serviço pois ele ainda não possui um identificador (ID).');
+      return;
+    }
+    this.selectedServico.set(servico);
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+    this.selectedServico.set(null);
+    this.editSuccess.set(false);
+  }
+
+  onSaveEdit(data: EditarServicoRequest) {
+    const servicoId = this.selectedServico()?.id;
+    if (!servicoId) return;
+
+    this.isEditingService.set(true);
+    this.servicoService.editarServico(servicoId, data).subscribe({
+      next: () => {
+        this.isEditingService.set(false);
+        this.editSuccess.set(true);
+        this.loadData();
+        
+        setTimeout(() => {
+          this.closeEditModal();
+        }, 1500);
+      },
+      error: (err) => {
+        console.error('Erro ao editar serviço', err);
+        this.isEditingService.set(false);
+        alert('Erro ao atualizar o serviço. Verifique os dados.');
+      }
+    });
   }
 
   onDeleteService(servico: any) {

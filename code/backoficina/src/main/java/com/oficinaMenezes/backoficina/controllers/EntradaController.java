@@ -1,6 +1,7 @@
 package com.oficinaMenezes.backoficina.controllers;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.EntradaResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,19 @@ public class EntradaController {
     public ResponseEntity<EntradaResponse> entradaPlacaVeiculo(@RequestParam String placaVeiculo){
         EntradaResponse entrada = entradaService.entradaAbertaVeiculo(placaVeiculo).toEntradaResponse();
         return ResponseEntity.ok(entrada);
+    }
+
+    @GetMapping("/entrada-por-veiculo")
+    public ResponseEntity<Page<EntradaResponse>> entradaPorVeiculo(
+            @RequestParam String placaVeiculo,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        Page<EntradaResponse> entradas = entradaService
+                .entradaPorVeiculo(placaVeiculo, page)
+                .map(Entrada::toEntradaResponse);
+
+
+        return ResponseEntity.ok(entradas);
     }
     
 }

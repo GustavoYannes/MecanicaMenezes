@@ -6,6 +6,9 @@ import com.oficinaMenezes.backoficina.models.entities.Servico;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.CreateEntradaDTO;
@@ -82,5 +85,11 @@ public class EntradaService {
         Optional<Entrada> entrada = entradaRepository.findByVeiculoAndStatus(veiculo, EStatusEntrada.ABERTA);
         if (entrada.isEmpty()) throw new EntradaNaoExisteException();
         return entrada.get();
+    }
+
+    public Page<Entrada> entradaPorVeiculo(String placa, int page){
+        Veiculo veiculo = veiculoService.findByPlaca(placa);
+        Pageable pageable = PageRequest.of(page, 5);
+        return entradaRepository.findByVeiculo(veiculo, pageable);
     }
 }

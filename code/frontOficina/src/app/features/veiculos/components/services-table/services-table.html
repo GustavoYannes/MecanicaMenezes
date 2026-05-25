@@ -17,7 +17,11 @@
         {{ servico.valorTotal | currency:'BRL':'symbol':'1.2-2' }}
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-        <button (click)="edit.emit(servico)" class="text-brand-muted hover:text-brand-primary transition-colors p-1.5 rounded-full hover:bg-white border border-transparent hover:border-[#D5C2B3]">
+        <button 
+          (click)="servico.id ? edit.emit(servico) : null" 
+          [disabled]="!servico.id"
+          [title]="!servico.id ? 'Serviço sem ID não pode ser editado' : 'Editar serviço'"
+          class="text-brand-muted hover:text-brand-primary transition-colors p-1.5 rounded-full hover:bg-white border border-transparent hover:border-[#D5C2B3] disabled:opacity-30 disabled:cursor-not-allowed">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
         </button>
         <button (click)="delete.emit(servico)" class="text-brand-muted hover:text-red-600 transition-colors p-1.5 rounded-full hover:bg-red-50 border border-transparent hover:border-red-200">
@@ -57,7 +61,11 @@
           <span class="font-bold text-brand-primary">{{ servico.quantidade }}x</span> {{ servico.valor | currency:'BRL':'symbol':'1.2-2' }}
         </div>
         <div class="flex space-x-2">
-          <button (click)="edit.emit(servico)" class="p-2 text-brand-muted hover:text-brand-primary bg-brand-background rounded-full border border-transparent hover:border-[#D5C2B3] transition-colors">
+          <button 
+            (click)="servico.id ? edit.emit(servico) : null" 
+            [disabled]="!servico.id"
+            [title]="!servico.id ? 'Serviço sem ID não pode ser editado' : 'Editar serviço'"
+            class="p-2 text-brand-muted hover:text-brand-primary bg-brand-background rounded-full border border-transparent hover:border-[#D5C2B3] transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
           </button>
           <button (click)="delete.emit(servico)" class="p-2 text-brand-muted hover:text-red-600 bg-brand-background rounded-full border border-transparent hover:border-red-200 transition-colors">

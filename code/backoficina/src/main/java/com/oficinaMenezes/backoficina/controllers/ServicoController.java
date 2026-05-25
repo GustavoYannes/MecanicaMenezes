@@ -2,6 +2,7 @@ package com.oficinaMenezes.backoficina.controllers;
 
 import com.oficinaMenezes.backoficina.infra.security.TokenService;
 import com.oficinaMenezes.backoficina.models.dtos.servico.CreateServicoDTO;
+import com.oficinaMenezes.backoficina.models.dtos.servico.EditarServicoDTO;
 import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoResponse;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
 import com.oficinaMenezes.backoficina.services.ServicoService;
@@ -42,6 +43,12 @@ public class ServicoController {
                 .buildAndExpand(newServico.getId())
                 .toUri();
         return ResponseEntity.created(location).body(newServico);
+    }
+
+    @PutMapping("/{servicoId}")
+    public ResponseEntity<ServicoResponse> editarServico(@PathVariable Long servicoId, @RequestBody @Valid EditarServicoDTO data){
+        ServicoResponse servico = servicoService.editarServico(data, servicoId);
+        return ResponseEntity.ok(servico);
     }
 
     @GetMapping("/por-entrada")

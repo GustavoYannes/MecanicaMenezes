@@ -148,5 +148,16 @@
         (cancel)="closeReleaseModal()">
       </app-release-vehicle-modal>
     }
+
+    <!-- Edit Service Modal -->
+    @if (showEditModal() && selectedServico()) {
+      <app-edit-service-modal
+        [servico]="selectedServico()!"
+        [isSubmitting]="isEditingService()"
+        [isSuccess]="editSuccess()"
+        (save)="onSaveEdit($event)"
+        (cancel)="closeEditModal()">
+      </app-edit-service-modal>
+    }
   }
 </div>
