@@ -24,4 +24,8 @@ export class ServicoService {
   editarServico(servicoId: number, data: any): Observable<any> {
     return this.http.put(`${this.API_URL}/${servicoId}`, data);
   }
+
+  deletarServico(servicoId: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${servicoId}`);
+  }
 }

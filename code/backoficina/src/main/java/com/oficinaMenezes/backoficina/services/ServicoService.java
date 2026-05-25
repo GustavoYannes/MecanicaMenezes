@@ -62,6 +62,13 @@ public class ServicoService {
         return servico.toServicoResponse();
     }
 
+    public ServicoResponse deletarServico(Long idServico){
+        Servico servico = servicoRepository.findById(idServico).orElse(null);
+        if (servico == null) throw new ServicoNaoExisteException();
+        servicoRepository.delete(servico);
+        return servico.toServicoResponse();
+    }
+
     public Boolean primeiroServicoEntrada(Entrada entrada){
         return !servicoRepository.existsByEntrada(entrada);
     }

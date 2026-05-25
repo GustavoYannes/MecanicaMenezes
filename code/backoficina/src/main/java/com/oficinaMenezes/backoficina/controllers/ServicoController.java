@@ -51,6 +51,13 @@ public class ServicoController {
         return ResponseEntity.ok(servico);
     }
 
+    @DeleteMapping("/{servicoId}")
+    public ResponseEntity<Void> deletarServico(@PathVariable Long servicoId) {
+        servicoService.deletarServico(servicoId);
+        return ResponseEntity.noContent().build();
+    }
+
+
     @GetMapping("/por-entrada")
     public ResponseEntity<List<ServicoResponse>> listarServicosPorEntrada(@RequestParam Long entradaid){
         List<Servico> listaServicos = servicoService.servicoPorEntrada(entradaid);
