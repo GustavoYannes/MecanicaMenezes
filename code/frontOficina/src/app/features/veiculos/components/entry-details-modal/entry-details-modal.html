@@ -1,0 +1,172 @@
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+  <!-- Overlay Backdrop com Blur -->
+  <div class="absolute inset-0 bg-brand-primary/40 backdrop-blur-sm transition-opacity" (click)="close.emit()"></div>
+
+  <!-- Modal Content -->
+  <div class="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-[2rem] shadow-2xl flex flex-col overflow-hidden">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-[#D5C2B3]">
+      <div>
+        <h2 class="text-xl font-bold text-brand-primary font-inter-tight">Detalhes da Entrada</h2>
+      </div>
+      <button 
+        (click)="close.emit()"
+        class="text-brand-muted hover:text-brand-primary p-2 hover:bg-[#EBE0D8] rounded-full transition-colors focus:outline-none"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body (Scrollable) -->
+    <div class="flex-1 overflow-y-auto p-6 bg-[#EBE0D8]">
+      
+      <!-- Informações da Entrada -->
+      <div class="bg-white rounded-xl shadow-sm border border-[#D5C2B3] p-5 mb-6 flex flex-wrap gap-6 items-center">
+        <div>
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1">Status</p>
+          <app-status-badge [status]="entrada?.status"></app-status-badge>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1">Data de Entrada</p>
+          <p class="text-sm font-medium text-brand-primary">
+            {{ entrada?.dataEntrada | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1">Data de Saída</p>
+          <p class="text-sm font-medium text-brand-primary">
+            {{ entrada?.dataSaida ? (entrada.dataSaida | date:'dd/MM/yyyy') : 'Em aberto' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Serviços (Loading) -->
+      @if (loading) {
+        <div class="flex flex-col items-center justify-center py-10">
+          <svg class="animate-spin h-8 w-8 text-brand-accent mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="text-brand-muted font-medium text-sm">Buscando serviços prestados...</p>
+        </div>
+      }
+
+      <!-- Serviços (Error) -->
+      @if (!loading && error) {
+        <div class="flex flex-col items-center justify-center py-10 text-center">
+          <svg class="h-10 w-10 text-red-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-sm text-brand-muted">Não foi possível carregar os serviços. Tente novamente.</p>
+        </div>
+      }
+
+      <!-- Serviços (Empty) -->
+      @if (!loading && !error && servicos.length === 0) {
+        <div class="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-[#D5C2B3] rounded-xl bg-[#F5ECE5]">
+          <svg class="h-12 w-12 text-brand-muted mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+          <h3 class="text-lg font-medium text-brand-primary">Nenhum serviço registrado</h3>
+          <p class="mt-1 text-sm text-brand-muted">Nenhum serviço foi vinculado a esta entrada ainda.</p>
+        </div>
+      }
+
+      <!-- Tabela de Serviços -->
+      @if (!loading && !error && servicos.length > 0) {
+        <div>
+          <h3 class="text-lg font-bold text-brand-primary mb-4 font-inter-tight">Serviços Realizados</h3>
+          
+          <!-- Desktop Table -->
+          <div class="hidden sm:block overflow-hidden rounded-xl border border-[#D5C2B3] bg-[#F5ECE5]">
+            <table class="min-w-full divide-y divide-[#D5C2B3]">
+              <thead class="bg-[#F5ECE5]">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-brand-primary uppercase tracking-wider">Serviço</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-brand-primary uppercase tracking-wider">Data</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-brand-primary uppercase tracking-wider">Qtd</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-brand-primary uppercase tracking-wider">Valor Un.</th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-brand-primary uppercase tracking-wider">Total</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#D5C2B3] bg-white">
+                @for (servico of servicos; track servico.nome) {
+                  <tr class="hover:bg-white transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-brand-primary">{{ servico.nome }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">{{ servico.data | date:'dd/MM/yyyy' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">{{ servico.quantidade }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">{{ servico.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-brand-accent text-right">
+                      {{ servico.valorTotal | currency:'BRL':'symbol':'1.2-2' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards -->
+          <div class="sm:hidden space-y-4">
+            @for (servico of servicos; track servico.nome) {
+              <div class="bg-white rounded-xl shadow-sm border border-[#D5C2B3] p-4 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="font-bold text-brand-primary text-sm">{{ servico.nome }}</h4>
+                  <span class="text-xs text-brand-muted font-medium bg-[#F5ECE5] px-2 py-0.5 rounded-md">{{ servico.data | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="flex justify-between items-end mt-2 pt-2 border-t border-[#D5C2B3]/50">
+                  <div class="flex flex-col">
+                    <span class="text-xs text-brand-muted uppercase">Qtd: {{ servico.quantidade }}</span>
+                    <span class="text-xs text-brand-muted uppercase">Un: {{ servico.valor | currency:'BRL':'symbol':'1.2-2' }}</span>
+                  </div>
+                  <span class="font-bold text-brand-accent text-sm">Total: {{ servico.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="px-6 py-4 bg-[#EBE0D8] border-t border-[#D5C2B3] sm:flex sm:justify-between sm:items-center">
+      <!-- Total -->
+      <div class="mb-4 sm:mb-0 flex items-center">
+        @if (!loading && !error && servicos.length > 0) {
+          <span class="text-sm font-semibold text-brand-muted uppercase tracking-wider mr-3">Valor Total</span>
+          <span class="text-xl font-bold text-brand-accent">{{ valorTotalEntrada | currency:'BRL':'symbol':'1.2-2' }}</span>
+        }
+      </div>
+      
+      <!-- Botões -->
+      <div class="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 sm:items-center">
+        <button 
+          (click)="close.emit()"
+          class="w-full sm:w-auto px-5 py-2.5 bg-white border border-[#D5C2B3] text-brand-primary hover:bg-[#F5ECE5] rounded-xl font-bold transition-colors focus:outline-none text-sm text-center"
+        >
+          Fechar
+        </button>
+        <button 
+          (click)="generatePdf()"
+          [disabled]="isGeneratingPdf || servicos.length === 0"
+          class="w-full sm:w-auto px-5 py-2.5 text-white bg-brand-accent hover:opacity-90 rounded-xl font-bold shadow-sm transition-all focus:outline-none flex justify-center items-center space-x-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (isGeneratingPdf) {
+            <svg class="animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Gerando PDF...</span>
+          } @else {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            <span>Baixar Orçamento</span>
+          }
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

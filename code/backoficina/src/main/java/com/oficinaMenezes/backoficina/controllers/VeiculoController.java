@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.controllers;
 
+import com.oficinaMenezes.backoficina.models.dtos.Cliente.ClienteResponse;
 import com.oficinaMenezes.backoficina.models.dtos.veiculo.ListVeiculoResponse;
 import com.oficinaMenezes.backoficina.models.dtos.veiculo.VeiculoResponse;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,7 @@ public class VeiculoController {
 
     @GetMapping("/{placa}")
     public ResponseEntity<VeiculoResponse> findByPlaca(@PathVariable String placa){
-        VeiculoResponse veiculo = veiculoService.findByPlaca(placa);
+        VeiculoResponse veiculo = veiculoService.findByPlaca(placa).toVeiculoResponse();
         return ResponseEntity.ok().body(veiculo);
     }
 

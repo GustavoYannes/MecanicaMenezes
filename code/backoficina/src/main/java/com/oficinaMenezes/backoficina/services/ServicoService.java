@@ -1,6 +1,8 @@
 package com.oficinaMenezes.backoficina.services;
 
 import com.oficinaMenezes.backoficina.models.dtos.servico.CreateServicoDTO;
+import com.oficinaMenezes.backoficina.models.dtos.servico.EditarServicoDTO;
+import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoResponse;
 import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
@@ -8,6 +10,7 @@ import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinalizada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
+import com.oficinaMenezes.backoficina.models.exceptions.servico.ServicoNaoExisteException;
 import com.oficinaMenezes.backoficina.repositories.EntradaRepository;
 import com.oficinaMenezes.backoficina.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,14 @@ public class ServicoService {
                 BigDecimal.valueOf(data.valor())
         );
         return servicoRepository.save(newServico);
+    }
+
+    public ServicoResponse editarServico(EditarServicoDTO data, Long idServico){
+        Servico servico = servicoRepository.findById(idServico).orElse(null);
+        if (servico == null) throw new ServicoNaoExisteException();
+        servico.editarServico(data);
+        servicoRepository.save(servico);
+        return servico.toServicoResponse();
     }
 
     public Boolean primeiroServicoEntrada(Entrada entrada){

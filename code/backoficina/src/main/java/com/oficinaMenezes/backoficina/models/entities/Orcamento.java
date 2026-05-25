@@ -32,14 +32,13 @@ public class Orcamento {
             String nomeCliente,
             String cpfCliente,
             Entrada entrada,
-            BigDecimal valorTotal,
-            LocalDate dataGeracao
+            BigDecimal valorTotal
     ) {
         this.nomeCliente = nomeCliente;
         this.cpfCliente = cpfCliente;
         this.entrada = entrada;
         this.valorTotal = valorTotal;
-        this.dataGeracao = dataGeracao;
+        this.dataGeracao = LocalDate.now();
     }
     
 }

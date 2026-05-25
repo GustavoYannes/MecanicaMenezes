@@ -1,0 +1,97 @@
+<div class="bg-[#EBDFD7] rounded-[2rem] overflow-hidden flex flex-col max-h-[90vh] w-full">
+  
+  <!-- Modal Header -->
+  <div class="flex items-center justify-between px-8 py-6">
+    <div>
+      <h2 class="text-2xl font-extrabold text-brand-primary">Adicionar Serviço</h2>
+      <p class="text-sm text-brand-muted mt-1">Registre um novo serviço para esta entrada</p>
+    </div>
+    <button 
+      (click)="cancel.emit()"
+      class="text-brand-muted hover:text-brand-primary p-2 hover:bg-black/5 rounded-full transition-colors focus:outline-none"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
+    <!-- Scrollable Content Body -->
+    <div class="px-8 pb-6 overflow-y-auto flex-1 custom-scrollbar">
+      
+      <div class="bg-[#FDF9F6] p-6 rounded-2xl border border-[#D5C2B3]">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+          
+          <!-- Nome -->
+          <div class="md:col-span-12">
+            <label class="block text-sm font-bold text-brand-primary mb-1.5 uppercase tracking-wide">Nome do Serviço *</label>
+            <input 
+              type="text" 
+              formControlName="nome"
+              class="w-full rounded-xl border-[#D5C2B3] bg-white shadow-sm focus:border-brand-accent focus:ring-brand-accent text-sm py-2.5 px-3"
+              placeholder="Ex: Troca de Óleo"
+            />
+            @if (serviceForm.get('nome')?.invalid && serviceForm.get('nome')?.touched) {
+              <p class="mt-1 text-xs text-red-500 font-medium">Nome é obrigatório (mín. 3 letras).</p>
+            }
+          </div>
+
+          <!-- Quantidade -->
+          <div class="md:col-span-4">
+            <label class="block text-sm font-bold text-brand-primary mb-1.5 uppercase tracking-wide">Quantidade *</label>
+            <input 
+              type="number" 
+              formControlName="quantidade"
+              class="w-full rounded-xl border-[#D5C2B3] bg-white shadow-sm focus:border-brand-accent focus:ring-brand-accent text-sm py-2.5 px-3"
+              placeholder="1"
+              min="1"
+            />
+            @if (serviceForm.get('quantidade')?.invalid && serviceForm.get('quantidade')?.touched) {
+              <p class="mt-1 text-xs text-red-500 font-medium">Inválida.</p>
+            }
+          </div>
+
+          <!-- Valor -->
+          <div class="md:col-span-8">
+            <label class="block text-sm font-bold text-brand-primary mb-1.5 uppercase tracking-wide">Valor Unitário (R$) *</label>
+            <input 
+              type="number" 
+              formControlName="valor"
+              step="0.01"
+              class="w-full rounded-xl border-[#D5C2B3] bg-white shadow-sm focus:border-brand-accent focus:ring-brand-accent text-sm py-2.5 px-3"
+              placeholder="0.00"
+              min="0"
+            />
+            @if (serviceForm.get('valor')?.invalid && serviceForm.get('valor')?.touched) {
+              <p class="mt-1 text-xs text-red-500 font-medium">Valor inválido.</p>
+            }
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="px-8 py-5 bg-[#EBE0D8] border-t border-[#D5C2B3] flex justify-between items-center rounded-b-[2rem]">
+      <button 
+        type="button" 
+        (click)="cancel.emit()"
+        class="px-6 py-2.5 text-sm font-bold text-brand-primary hover:bg-black/5 rounded-xl transition-colors focus:outline-none"
+      >
+        Cancelar
+      </button>
+      
+      <button 
+        type="submit" 
+        [disabled]="serviceForm.invalid"
+        class="px-8 py-2.5 text-sm font-bold text-white bg-[#EC5B13] hover:opacity-90 rounded-xl shadow-md transition-all active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#EC5B13]/20 flex items-center space-x-2 disabled:opacity-70"
+      >
+        <span>Confirmar Serviço</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button>
+    </div>
+  </form>
+</div>

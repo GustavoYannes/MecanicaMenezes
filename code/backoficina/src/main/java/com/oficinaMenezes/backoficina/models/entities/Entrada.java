@@ -2,6 +2,7 @@ package com.oficinaMenezes.backoficina.models.entities;
 
 import java.time.LocalDate;
 
+import com.oficinaMenezes.backoficina.models.dtos.entrada.EntradaResponse;
 import com.oficinaMenezes.backoficina.models.dtos.pdf.OrcamentoPDFDto;
 import com.oficinaMenezes.backoficina.models.entities.enums.EStatusEntrada;
 import jakarta.persistence.*;
@@ -49,6 +50,15 @@ public class Entrada {
         orcamento.setDataSaida(this.dataSaida);
         veiculo.gerarOrcamento(orcamento);
         return orcamento;
+    }
+
+    public EntradaResponse toEntradaResponse(){
+        return new EntradaResponse(
+                this.id,
+                this.status.toString(),
+                this.dataEntrada,
+                this.dataSaida
+        );
     }
 
 }

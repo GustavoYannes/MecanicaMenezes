@@ -95,9 +95,15 @@ public class VeiculoService {
         return veiculosPage.map(Veiculo::toListVeiculoResponse);
     }
 
-    public VeiculoResponse findByPlaca(String placa){
+    public Veiculo findByPlaca(String placa){
         Veiculo veiculo = veiculoRepository.findByPlaca(placa);
         if(veiculo == null){throw new VeiculoEmAtendimentoException();}
-        return veiculo.toVeiculoResponse();
+        return veiculo;
+    }
+
+    public Cliente donoVeiculo(String placa){
+        Veiculo veiculo = veiculoRepository.findByPlaca(placa);
+        if(veiculo == null){throw new VeiculoEmAtendimentoException();}
+        return veiculo.getDono();
     }
 }
