@@ -57,7 +57,6 @@ public class ServicoController {
         return ResponseEntity.noContent().build();
     }
 
-
     @GetMapping("/por-entrada")
     public ResponseEntity<List<ServicoResponse>> listarServicosPorEntrada(@RequestParam Long entradaid){
         List<Servico> listaServicos = servicoService.servicoPorEntrada(entradaid);

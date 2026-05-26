@@ -27,7 +27,7 @@ public class AuthenticationService implements UserDetailsService {
         return findUser;
     }
 
-    public Gerente registrarGerente(RegistrarFuncionarioDTO data) {
+    public Gerente  registrarGerente(RegistrarFuncionarioDTO data) {
 
         if (this.funcionarioRepository.findByCpf(data.cpf()) != null) throw new UsuarioJaExisteException();
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());

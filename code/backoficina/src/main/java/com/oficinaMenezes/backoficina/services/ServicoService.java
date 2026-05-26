@@ -16,6 +16,7 @@ import com.oficinaMenezes.backoficina.repositories.ServicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -74,6 +75,5 @@ public class ServicoService {
     }
 
     public List<Servico> servicoPorEntrada(Long entradaId) {return servicoRepository.findByEntradaId(entradaId);}
-
 
 }

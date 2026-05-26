@@ -1,6 +1,7 @@
 package com.oficinaMenezes.backoficina.controllers;
 
 import com.oficinaMenezes.backoficina.models.dtos.entrada.EntradaResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/entrada")
+@Tag(name = "Entrada")
 public class EntradaController {
     private EntradaService entradaService;
 

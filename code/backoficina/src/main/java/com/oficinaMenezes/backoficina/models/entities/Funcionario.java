@@ -1,5 +1,6 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioResponse;
 import com.oficinaMenezes.backoficina.models.entities.enums.ERole;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
@@ -51,6 +52,7 @@ public class Funcionario implements UserDetails {
         return nome;
     }
 
+    public String getRole(){return role.getRole();}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

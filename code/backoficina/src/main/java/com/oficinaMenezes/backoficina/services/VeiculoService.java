@@ -100,10 +100,4 @@ public class VeiculoService {
         if(veiculo == null){throw new VeiculoEmAtendimentoException();}
         return veiculo;
     }
-
-    public Cliente donoVeiculo(String placa){
-        Veiculo veiculo = veiculoRepository.findByPlaca(placa);
-        if(veiculo == null){throw new VeiculoEmAtendimentoException();}
-        return veiculo.getDono();
-    }
 }

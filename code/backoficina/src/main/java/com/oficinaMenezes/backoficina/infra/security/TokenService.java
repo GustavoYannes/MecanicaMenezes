@@ -26,6 +26,7 @@ public class TokenService {
                     .withIssuer("oficina-api")
                     .withSubject(funcionario.getUuid().toString())
                     .withClaim("nome", funcionario.getNome())
+                    .withClaim("role", funcionario.getRole())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;

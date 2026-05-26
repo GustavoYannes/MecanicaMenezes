@@ -18,6 +18,7 @@ export class UserCard implements OnInit {
 
   userName = signal('Usuário');
   userInitials = signal('U');
+  userRole = signal('Mecânico');
   dropdownOpen = signal(false);
 
   ngOnInit() {
@@ -26,6 +27,19 @@ export class UserCard implements OnInit {
       this.userName.set(storedName);
       this.userInitials.set(this.getInitials(storedName));
     }
+    const role = this.tokenService.getUserRole();
+    if (role) {
+      this.userRole.set(this.formatRole(role));
+    }
+  }
+
+  private formatRole(role: string): string {
+    const roleMap: Record<string, string> = {
+      'GERENTE': 'Gerente',
+      'MECANICO': 'Mecânico',
+      'ASSISTENTE': 'Assistente'
+    };
+    return roleMap[role.toUpperCase()] || role;
   }
 
   private getInitials(name: string): string {

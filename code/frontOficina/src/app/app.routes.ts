@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,8 @@ export const routes: Routes = [
       },
       {
         path: 'funcionarios',
+        canActivate: [authGuard, roleGuard],
+        data: { roles: ['GERENTE'] },
         loadComponent: () => import('./features/funcionarios/pages/funcionarios/funcionarios').then(m => m.Funcionarios)
       },
       {
