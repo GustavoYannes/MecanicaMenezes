@@ -1,7 +1,7 @@
 package com.oficinaMenezes.backoficina.controllers;
 
 import com.oficinaMenezes.backoficina.models.dtos.auth.RegistrarFuncionarioDTO;
-import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioResponse;
+import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioListResponse;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.models.entities.enums.ERole;
 import com.oficinaMenezes.backoficina.services.FuncionarioService;
@@ -40,7 +40,7 @@ public class MecanicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<FuncionarioResponse>> getAllMecanicos(
+    public ResponseEntity<Page<FuncionarioListResponse>> getAllMecanicos(
             @RequestParam(required = false) String nome,
             @RequestParam(defaultValue = "0") int page
     ){

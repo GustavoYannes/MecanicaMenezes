@@ -1,10 +1,13 @@
 package com.oficinaMenezes.backoficina.models.dtos.funcionario;
 
-import java.math.BigDecimal;
+import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoResponse;
+
+import java.util.List;
 
 public record FuncionarioResponse(
         String nome,
-        BigDecimal totalGeradoMensal,
-        Long totalServicoMensal
+        String cpf,
+        String email,
+        List<ServicoResponse> servicosDoMes
 ) {
 }

@@ -1,9 +1,9 @@
 package com.oficinaMenezes.backoficina.services;
 
 import com.oficinaMenezes.backoficina.models.dtos.auth.RegistrarFuncionarioDTO;
+import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioListResponse;
 import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioResponse;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
-import com.oficinaMenezes.backoficina.models.entities.Gerente;
 import com.oficinaMenezes.backoficina.models.entities.Mecanico;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
 import com.oficinaMenezes.backoficina.models.entities.enums.ERole;
@@ -39,7 +39,7 @@ public class FuncionarioService {
         return funcionarioRepository.findById(id).orElse(null);
     }
 
-    public Page<FuncionarioResponse> listarFuncionarios(String nome, int page, ERole cargo) {
+    public Page<FuncionarioListResponse> listarFuncionarios(String nome, int page, ERole cargo) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by("nome").ascending());
 
         Specification<Funcionario> spec = Specification
@@ -69,7 +69,7 @@ public class FuncionarioService {
                     .mapToLong(Servico::getQuantidade)
                     .sum();
 
-            return new FuncionarioResponse(
+            return new FuncionarioListResponse(
                     funcionario.getNome(),
                     totalGeradoMensal,
                     totalServicoMensal
@@ -93,5 +93,7 @@ public class FuncionarioService {
         return this.funcionarioRepository.save(mecanico);
 
     }
+
+    public FuncionarioResponse getFuncionario()
 
 }
