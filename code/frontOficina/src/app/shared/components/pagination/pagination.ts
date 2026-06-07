@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './pagination.html'
 })
-export class Pagination {
+export class Pagination implements OnChanges {
   @Input() currentPage: number = 0;
   @Input() totalPages: number = 0;
   @Input() totalElements: number = 0;
@@ -16,15 +16,24 @@ export class Pagination {
   @Input() itemName: string = 'itens';
   @Output() pageChange = new EventEmitter<number>();
 
-  get pages(): number[] {
+  // Cached array to avoid creating a new one every CD cycle
+  pages: number[] = [];
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['currentPage'] || changes['totalPages']) {
+      this.updatePages();
+    }
+  }
+
+  private updatePages() {
     const start = Math.max(0, this.currentPage - 2);
     const end = Math.min(this.totalPages - 1, start + 4);
-    
-    const displayPages = [];
+
+    const displayPages: number[] = [];
     for (let i = start; i <= end; i++) {
       displayPages.push(i);
     }
-    return displayPages;
+    this.pages = displayPages;
   }
 
   goToPage(page: number) {
@@ -45,3 +54,4 @@ export class Pagination {
     }
   }
 }
+

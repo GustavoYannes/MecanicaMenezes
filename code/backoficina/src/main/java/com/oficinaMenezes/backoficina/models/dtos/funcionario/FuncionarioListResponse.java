@@ -1,10 +1,9 @@
 package com.oficinaMenezes.backoficina.models.dtos.funcionario;
 
-import java.math.BigDecimal;
+import java.util.UUID;
 
 public record FuncionarioListResponse(
-        String nome,
-        BigDecimal totalGeradoMensal,
-        Long totalServicoMensal
+        UUID id,
+        String nome
 ) {
 }

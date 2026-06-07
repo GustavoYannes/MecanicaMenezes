@@ -45,6 +45,13 @@ export class TokenService {
     return decoded?.role || null;
   }
 
+  getUuid(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    const decoded = this.decodeToken(token);
+    return decoded?.sub || null;
+  }
+
   isManager(): boolean {
     return this.getUserRole() === 'GERENTE';
   }

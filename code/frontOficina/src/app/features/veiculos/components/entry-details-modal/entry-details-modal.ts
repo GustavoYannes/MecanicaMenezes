@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { ServicoService } from '../../services/servico.service';
@@ -18,52 +18,48 @@ export class EntryDetailsModal implements OnInit {
 
   private servicoService = inject(ServicoService);
   private entradaService = inject(EntradaService);
-  private cdr = inject(ChangeDetectorRef);
 
-  servicos: Servico[] = [];
-  loading = true;
-  error = false;
-  isGeneratingPdf = false;
-  valorTotalEntrada = 0;
+  servicos = signal<Servico[]>([]);
+  loading = signal(true);
+  error = signal(false);
+  isGeneratingPdf = signal(false);
+  valorTotalEntrada = signal(0);
 
   ngOnInit() {
     if (this.entrada && this.entrada.id) {
       this.loadServicos();
     } else {
-      this.error = true;
-      this.loading = false;
+      this.error.set(true);
+      this.loading.set(false);
     }
   }
 
   loadServicos() {
     this.servicoService.getServicosPorEntrada(this.entrada.id).subscribe({
       next: (data) => {
-        this.servicos = data || [];
+        this.servicos.set(data || []);
         this.calcularTotal();
-        this.loading = false;
-        this.cdr.markForCheck();
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Erro ao buscar serviços da entrada:', err);
-        this.error = true;
-        this.loading = false;
-        this.cdr.markForCheck();
+        this.error.set(true);
+        this.loading.set(false);
       }
     });
   }
 
   calcularTotal() {
-    this.valorTotalEntrada = this.servicos.reduce((total, servico) => total + (servico.valorTotal || 0), 0);
+    this.valorTotalEntrada.set(this.servicos().reduce((total, servico) => total + (servico.valorTotal || 0), 0));
   }
 
   generatePdf() {
-    if (this.isGeneratingPdf) return;
+    if (this.isGeneratingPdf()) return;
     
-    this.isGeneratingPdf = true;
+    this.isGeneratingPdf.set(true);
     this.entradaService.gerarPdfEntrada(this.entrada.id).subscribe({
       next: (blob) => {
-        this.isGeneratingPdf = false;
-        this.cdr.markForCheck();
+        this.isGeneratingPdf.set(false);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -76,8 +72,7 @@ export class EntryDetailsModal implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao gerar PDF', err);
-        this.isGeneratingPdf = false;
-        this.cdr.markForCheck();
+        this.isGeneratingPdf.set(false);
       }
     });
   }

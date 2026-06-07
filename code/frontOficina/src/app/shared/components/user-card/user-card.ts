@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, HostListener } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, ElementRef } from '@angular/core';
 import { TokenService } from '../../../core/services/token.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
@@ -11,15 +11,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './user-card.html',
   styles: []
 })
-export class UserCard implements OnInit {
+export class UserCard implements OnInit, OnDestroy {
   private tokenService = inject(TokenService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private elementRef = inject(ElementRef);
 
   userName = signal('Usuário');
   userInitials = signal('U');
   userRole = signal('Mecânico');
   dropdownOpen = signal(false);
+
+  private boundOnDocumentClick = this.onDocumentClick.bind(this);
 
   ngOnInit() {
     const storedName = this.tokenService.getUserName();
@@ -31,6 +34,13 @@ export class UserCard implements OnInit {
     if (role) {
       this.userRole.set(this.formatRole(role));
     }
+
+    // Use manual listener to avoid triggering CD on every document click
+    document.addEventListener('click', this.boundOnDocumentClick);
+  }
+
+  ngOnDestroy() {
+    document.removeEventListener('click', this.boundOnDocumentClick);
   }
 
   private formatRole(role: string): string {
@@ -55,8 +65,8 @@ export class UserCard implements OnInit {
     this.dropdownOpen.update(val => !val);
   }
 
-  @HostListener('document:click')
-  closeDropdown() {
+  private onDocumentClick(event: Event) {
+    // Only update signal when dropdown is actually open to avoid unnecessary CD notifications
     if (this.dropdownOpen()) {
       this.dropdownOpen.set(false);
     }
@@ -67,3 +77,4 @@ export class UserCard implements OnInit {
     this.router.navigate(['/login']);
   }
 }
+

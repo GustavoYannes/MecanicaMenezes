@@ -5,8 +5,6 @@ import com.oficinaMenezes.backoficina.models.entities.enums.ERole;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
-
 public class FuncionarioSpec {
 
     public static Specification<Funcionario> nomeContains(String nome) {

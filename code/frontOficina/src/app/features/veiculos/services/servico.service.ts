@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Servico } from '../models/servico.model';
 import { ServicoCreateRequest } from '../models/servico-create-request.model';
 import { environment } from '../../../../environments/environment';
+import { PageResponse, ServicoResponse, RelatorioMensalResponse } from '../../funcionarios/models/funcionario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,22 @@ export class ServicoService {
 
   deletarServico(servicoId: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${servicoId}`);
+  }
+
+  getServicosPaginados(inicio: string, fim: string, uuidFuncionario: string, page: number): Observable<PageResponse<ServicoResponse>> {
+    let params = new HttpParams()
+      .set('inicio', inicio)
+      .set('fim', fim)
+      .set('uuidFuncionario', uuidFuncionario)
+      .set('page', page.toString());
+    return this.http.get<PageResponse<ServicoResponse>>(this.API_URL, { params });
+  }
+
+  getRelatorioMensal(inicio: string, fim: string, uuidFuncionario: string): Observable<RelatorioMensalResponse> {
+    let params = new HttpParams()
+      .set('inicio', inicio)
+      .set('fim', fim)
+      .set('uuidFuncionario', uuidFuncionario);
+    return this.http.get<RelatorioMensalResponse>(`${this.API_URL}/relatorioMensal`, { params });
   }
 }

@@ -47,6 +47,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/funcionarios/pages/funcionarios/funcionarios').then(m => m.Funcionarios)
       },
       {
+        path: 'meu-perfil',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/funcionarios/pages/meu-perfil/meu-perfil').then(m => m.MeuPerfil)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

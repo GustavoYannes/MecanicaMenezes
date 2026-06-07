@@ -1,11 +1,14 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FuncionarioService } from '../../services/funcionario.service';
+import { ServicoService } from '../../../veiculos/services/servico.service';
 import { FuncionarioListItem, RegistrarFuncionarioRequest } from '../../models/funcionario.model';
 import { SearchInput } from '../../../../shared/components/search-input/search-input';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { FuncionarioRegisterModal } from '../../components/funcionario-register-modal/funcionario-register-modal';
+import { forkJoin, of } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-funcionarios',
@@ -22,107 +25,163 @@ import { FuncionarioRegisterModal } from '../../components/funcionario-register-
 })
 export class Funcionarios implements OnInit {
   private funcionarioService = inject(FuncionarioService);
-  private cdr = inject(ChangeDetectorRef);
+  private servicoService = inject(ServicoService);
 
-  funcionarios: FuncionarioListItem[] = [];
-  loading = false;
-  error = false;
-  empty = false;
+  // State signals
+  funcionarios = signal<FuncionarioListItem[]>([]);
+  loading = signal(false);
+  error = signal(false);
+  empty = signal(false);
 
-  currentPage = 0;
-  totalPages = 0;
-  totalElements = 0;
-  first = true;
-  last = true;
+  currentPage = signal(0);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  first = signal(true);
+  last = signal(true);
 
   searchQuery = '';
 
-  // Modal State
-  showRegisterModal = false;
-  isSubmitting = false;
-  isSuccess = false;
-  modalErrorMessage: string | null = null;
+  // Modal State signals
+  showRegisterModal = signal(false);
+  isSubmitting = signal(false);
+  isSuccess = signal(false);
+  modalErrorMessage = signal<string | null>(null);
 
   ngOnInit() {
     this.loadFuncionarios();
   }
 
-  loadFuncionarios() {
-    this.loading = true;
-    this.error = false;
-    this.empty = false;
+  private getPeriodoMesAtual(): { inicio: string; fim: string } {
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = agora.getMonth();
 
-    this.funcionarioService.getFuncionarios(this.searchQuery, this.currentPage)
+    const primeiroDia = new Date(ano, mes, 1);
+    const ultimoDia = new Date(ano, mes + 1, 0);
+
+    const formatarData = (d: Date): string => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+
+    return {
+      inicio: formatarData(primeiroDia),
+      fim: formatarData(ultimoDia),
+    };
+  }
+
+  loadFuncionarios() {
+    this.loading.set(true);
+    this.error.set(false);
+    this.empty.set(false);
+
+    const { inicio, fim } = this.getPeriodoMesAtual();
+
+    this.funcionarioService.getFuncionarios(this.searchQuery, this.currentPage())
       .subscribe({
         next: (response) => {
-          this.funcionarios = response?.content || [];
-          this.totalPages = response?.totalPages || 0;
-          this.totalElements = response?.totalElements || 0;
-          this.first = response?.first ?? true;
-          this.last = response?.last ?? true;
-          this.loading = false;
+          const content = response?.content || [];
           
-          if (this.funcionarios.length === 0) {
-            this.empty = true;
-          }
-          this.cdr.markForCheck();
+          const items = content.map(mecanico => ({
+            ...mecanico,
+            totalServicoMensal: undefined,
+            totalGeradoMensal: undefined
+          }));
+
+          this.funcionarios.set(items);
+          this.totalPages.set(response?.totalPages || 0);
+          this.totalElements.set(response?.totalElements || 0);
+          this.first.set(response?.first ?? true);
+          this.last.set(response?.last ?? true);
+          this.loading.set(false);
+          this.empty.set(items.length === 0);
+
+          // Disparar buscas individuais em paralelo
+          content.forEach((mecanico) => {
+            this.servicoService.getRelatorioMensal(inicio, fim, mecanico.id)
+              .subscribe({
+                next: (report) => {
+                  this.funcionarios.update(funcs => funcs.map(f => {
+                    if (f.id === mecanico.id) {
+                      return {
+                        ...f,
+                        totalServicoMensal: report?.qtdServico ?? 0,
+                        totalGeradoMensal: report?.totalGerado ?? 0
+                      };
+                    }
+                    return f;
+                  }));
+                },
+                error: (err) => {
+                  console.error(`Erro ao carregar relatório do mecânico ${mecanico.nome}:`, err);
+                  this.funcionarios.update(funcs => funcs.map(f => {
+                    if (f.id === mecanico.id) {
+                      return {
+                        ...f,
+                        totalServicoMensal: -1,
+                        totalGeradoMensal: -1
+                      };
+                    }
+                    return f;
+                  }));
+                }
+              });
+          });
         },
         error: (err) => {
           console.error('Erro ao buscar funcionários:', err);
-          this.error = true;
-          this.loading = false;
-          this.cdr.markForCheck();
+          this.error.set(true);
+          this.loading.set(false);
         }
       });
   }
 
   onSearch(query: string) {
     this.searchQuery = query;
-    this.currentPage = 0;
+    this.currentPage.set(0);
     this.loadFuncionarios();
   }
 
   onPageChange(page: number) {
-    this.currentPage = page;
+    this.currentPage.set(page);
     this.loadFuncionarios();
   }
 
   openRegisterModal() {
-    this.showRegisterModal = true;
-    this.isSubmitting = false;
-    this.isSuccess = false;
-    this.modalErrorMessage = null;
+    this.showRegisterModal.set(true);
+    this.isSubmitting.set(false);
+    this.isSuccess.set(false);
+    this.modalErrorMessage.set(null);
   }
 
   closeRegisterModal() {
-    if (!this.isSubmitting) {
-      this.showRegisterModal = false;
+    if (!this.isSubmitting()) {
+      this.showRegisterModal.set(false);
     }
   }
 
   onRegisterSave(data: RegistrarFuncionarioRequest) {
-    this.isSubmitting = true;
-    this.modalErrorMessage = null;
+    this.isSubmitting.set(true);
+    this.modalErrorMessage.set(null);
 
     this.funcionarioService.registrarFuncionario(data)
       .subscribe({
         next: () => {
-          this.isSubmitting = false;
-          this.isSuccess = true;
-          this.cdr.markForCheck();
+          this.isSubmitting.set(false);
+          this.isSuccess.set(true);
 
           setTimeout(() => {
-            this.showRegisterModal = false;
-            this.isSuccess = false;
+            this.showRegisterModal.set(false);
+            this.isSuccess.set(false);
             this.loadFuncionarios();
-            this.cdr.markForCheck();
           }, 1500);
         },
         error: (err) => {
-          this.isSubmitting = false;
+          this.isSubmitting.set(false);
           console.error('Erro ao cadastrar funcionário:', err);
-          this.modalErrorMessage = err.error?.message || 'Erro ao cadastrar funcionário. Verifique os dados e tente novamente.';
-          this.cdr.markForCheck();
+          this.modalErrorMessage.set(err.error?.message || 'Erro ao cadastrar funcionário. Verifique os dados e tente novamente.');
         }
       });
   }
