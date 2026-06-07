@@ -37,10 +37,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/clientes/pages/clientes/clientes').then(m => m.Clientes)
       },
       {
-        path: 'orcamentos',
-        loadComponent: () => import('./features/orcamentos/pages/orcamentos/orcamentos').then(m => m.Orcamentos)
-      },
-      {
         path: 'funcionarios',
         canActivate: [authGuard, roleGuard],
         data: { roles: ['GERENTE'] },

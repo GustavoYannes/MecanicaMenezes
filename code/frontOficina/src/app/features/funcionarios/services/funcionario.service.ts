@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class FuncionarioService {
   private http = inject(HttpClient);
-  private readonly API_URL = `${environment.apiUrl}/api/mecanico`;
+  private readonly API_URL = `${environment.apiUrl}/mecanico`;
 
   getFuncionarios(nome: string, page: number): Observable<FuncionarioPage> {
     let params = new HttpParams().set('page', page.toString());
@@ -24,6 +24,6 @@ export class FuncionarioService {
   }
 
   getFuncionarioLogado(): Observable<FuncionarioPerfilResponse> {
-    return this.http.get<FuncionarioPerfilResponse>(`${environment.apiUrl}/api/funcionario/id`);
+    return this.http.get<FuncionarioPerfilResponse>(`${environment.apiUrl}/funcionario/id`);
   }
 }

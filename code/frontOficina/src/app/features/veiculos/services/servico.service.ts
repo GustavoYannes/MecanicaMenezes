@@ -11,7 +11,7 @@ import { PageResponse, ServicoResponse, RelatorioMensalResponse } from '../../fu
 })
 export class ServicoService {
   private http = inject(HttpClient);
-  private readonly API_URL = `${environment.apiUrl}/api/servico`;
+  private readonly API_URL = `${environment.apiUrl}/servico`;
 
   getServicosPorEntrada(entradaId: number): Observable<Servico[]> {
     const params = new HttpParams().set('entradaid', entradaId.toString());

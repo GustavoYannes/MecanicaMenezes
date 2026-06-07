@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class EntradaService {
   private http = inject(HttpClient);
-  private readonly API_URL = `${environment.apiUrl}/api/entrada`;
+  private readonly API_URL = `${environment.apiUrl}/entrada`;
 
   createEntrada(payload: EntradaCreateRequest): Observable<any> {
     return this.http.post(this.API_URL, payload);

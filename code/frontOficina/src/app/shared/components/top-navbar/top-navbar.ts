@@ -31,7 +31,6 @@ export class TopNavbar {
     if (url.includes('dashboard')) this.pageTitle = 'Dashboard';
     else if (url.includes('veiculos')) this.pageTitle = 'Veículos';
     else if (url.includes('clientes')) this.pageTitle = 'Clientes';
-    else if (url.includes('orcamentos')) this.pageTitle = 'Orçamentos';
     else if (url.includes('funcionarios')) this.pageTitle = 'Funcionários';
     else if (url.includes('meu-perfil')) this.pageTitle = 'Meu Perfil';
     else this.pageTitle = 'Dashboard';

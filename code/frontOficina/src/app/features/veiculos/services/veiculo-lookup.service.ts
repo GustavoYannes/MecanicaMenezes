@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class VeiculoLookupService {
   private http = inject(HttpClient);
-  private readonly API_URL = `${environment.apiUrl}/api/veiculos`;
+  private readonly API_URL = `${environment.apiUrl}/veiculos`;
 
   searchByPlaca(placa: string): Observable<VeiculoSearchPage> {
     return this.http.get<VeiculoSearchPage>(this.API_URL, {
