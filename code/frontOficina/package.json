@@ -9,7 +9,8 @@
     "build": "node scripts/set-env.js && ng build",
     "build:prod": "node scripts/set-env.js && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "node scripts/set-env.js && ng test",
+    "postinstall": "node scripts/set-env.js"
   },
   "private": true,
   "packageManager": "npm@10.9.2",
