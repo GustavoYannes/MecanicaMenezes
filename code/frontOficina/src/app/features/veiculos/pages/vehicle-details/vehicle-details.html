@@ -18,7 +18,7 @@
       </svg>
       <h3 class="text-lg font-medium text-brand-primary">Erro ao carregar</h3>
       <p class="mt-1 text-sm text-brand-muted">{{ error() }}</p>
-      <button (click)="goBack()" class="mt-6 px-4 py-2 border border-[#D5C2B3] rounded-md shadow-sm text-sm font-medium text-brand-primary bg-white hover:bg-[#F5ECE5] focus:outline-none transition-colors">
+      <button (click)="goBack()" class="mt-6 px-4 py-2 border border-[#D5C2B3] rounded-md shadow-sm text-sm font-medium text-brand-primary bg-white hover:bg-[#F5ECE5] focus:outline-none transition-colors cursor-pointer">
         Voltar para a Lista
       </button>
     </div>
@@ -30,7 +30,7 @@
       <!-- Header -->
       <div class="sm:flex sm:justify-between sm:items-center mb-8">
         <div class="mb-4 sm:mb-0 flex items-center space-x-4">
-          <button (click)="goBack()" class="p-2 rounded-full border border-[#D5C2B3] text-brand-muted hover:text-brand-primary hover:bg-[#F5ECE5] bg-white transition-colors">
+          <button (click)="goBack()" class="p-2 rounded-full border border-[#D5C2B3] text-brand-muted hover:text-brand-primary hover:bg-[#F5ECE5] bg-white transition-colors cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           </button>
           <div>
@@ -43,7 +43,7 @@
           @if (entrada()?.status === 'ABERTA') {
             <button 
               (click)="openReleaseModal()"
-              class="bg-white border border-brand-accent/30 text-brand-accent hover:bg-brand-accent hover:text-white font-bold py-2.5 px-5 rounded-xl shadow-sm transition-all text-sm active:scale-95"
+              class="bg-white border border-brand-accent/30 text-brand-accent hover:bg-brand-accent hover:text-white font-bold py-2.5 px-5 rounded-xl shadow-sm transition-all text-sm active:scale-95 cursor-pointer"
             >
               Liberar Veículo
             </button>
@@ -52,7 +52,7 @@
           <button 
             [disabled]="isGeneratingPdf() || !entrada()"
             (click)="generatePdf()"
-            class="font-bold py-2.5 px-5 rounded-xl shadow-sm transition-all text-sm flex items-center space-x-2 border disabled:opacity-50 disabled:cursor-not-allowed bg-[#EBE0D8] border-[#D5C2B3] text-brand-primary hover:bg-[#D5C2B3] active:scale-95"
+            class="font-bold py-2.5 px-5 rounded-xl shadow-sm transition-all text-sm flex items-center space-x-2 border disabled:opacity-50 disabled:cursor-not-allowed bg-[#EBE0D8] border-[#D5C2B3] text-brand-primary hover:bg-[#D5C2B3] active:scale-95 cursor-pointer"
           >
             @if (isGeneratingPdf()) {
               <svg class="animate-spin w-4 h-4 text-brand-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -101,7 +101,7 @@
           </div>
 
           @if (entrada() && !showServiceForm()) {
-            <button (click)="showServiceForm.set(true)" class="bg-brand-accent hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors text-sm flex items-center space-x-2">
+            <button (click)="showServiceForm.set(true)" class="bg-brand-accent hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors text-sm flex items-center space-x-2 cursor-pointer">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
               <span>Novo Serviço</span>
             </button>
@@ -158,6 +158,17 @@
         (save)="onSaveEdit($event)"
         (cancel)="closeEditModal()">
       </app-edit-service-modal>
+    }
+
+    <!-- Delete Service Modal -->
+    @if (showDeleteModal() && serviceToDelete()) {
+      <app-delete-service-modal
+        [servico]="serviceToDelete()!"
+        [isSubmitting]="isDeletingService()"
+        [isSuccess]="deleteSuccess()"
+        (confirm)="confirmDeleteService()"
+        (cancel)="closeDeleteModal()">
+      </app-delete-service-modal>
     }
   }
 </div>

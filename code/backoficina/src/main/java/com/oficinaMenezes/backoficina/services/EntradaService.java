@@ -80,6 +80,8 @@ public class EntradaService {
         return valorTotal;
     }
 
+    public Entrada getById(Long idEntrada){return entradaRepository.findById(idEntrada).orElseThrow(EntradaNaoExisteException::new);}
+
     public Entrada entradaAbertaVeiculo(String placa){
         Veiculo veiculo = veiculoService.findByPlaca(placa);
         Optional<Entrada> entrada = entradaRepository.findByVeiculoAndStatus(veiculo, EStatusEntrada.ABERTA);

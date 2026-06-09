@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VeiculoService } from '../../services/veiculo.service';
@@ -30,28 +30,29 @@ export class VehicleHistoryDetails implements OnInit {
   private router = inject(Router);
   private veiculoService = inject(VeiculoService);
   private entradaService = inject(EntradaService);
-  private cdr = inject(ChangeDetectorRef);
 
   placa: string = '';
-  veiculo: VeiculoDetail | null = null;
-  loadingVehicle = true;
-  errorVehicle = false;
+  
+  // State signals
+  veiculo = signal<VeiculoDetail | null>(null);
+  loadingVehicle = signal(true);
+  errorVehicle = signal(false);
 
-  entradas: any[] = [];
-  loadingEntradas = true;
-  errorEntradas = false;
-  emptyEntradas = false;
+  entradas = signal<any[]>([]);
+  loadingEntradas = signal(true);
+  errorEntradas = signal(false);
+  emptyEntradas = signal(false);
 
   // Pagination for entradas
-  currentPage = 0;
-  totalPages = 0;
-  totalElements = 0;
-  first = true;
-  last = true;
+  currentPage = signal(0);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  first = signal(true);
+  last = signal(true);
 
   // Modal State
-  selectedEntrada: any = null;
-  showModal = false;
+  selectedEntrada = signal<any>(null);
+  showModal = signal(false);
 
   ngOnInit() {
     this.placa = this.route.snapshot.paramMap.get('placa') || '';
@@ -64,64 +65,61 @@ export class VehicleHistoryDetails implements OnInit {
   }
 
   loadVehicleDetails() {
-    this.loadingVehicle = true;
-    this.errorVehicle = false;
+    this.loadingVehicle.set(true);
+    this.errorVehicle.set(false);
     this.veiculoService.getVeiculoByPlaca(this.placa).subscribe({
       next: (data) => {
-        this.veiculo = data;
-        this.loadingVehicle = false;
-        this.cdr.markForCheck();
+        this.veiculo.set(data);
+        this.loadingVehicle.set(false);
       },
       error: (err) => {
         console.error('Erro ao buscar veículo', err);
-        this.errorVehicle = true;
-        this.loadingVehicle = false;
-        this.cdr.markForCheck();
+        this.errorVehicle.set(true);
+        this.loadingVehicle.set(false);
       }
     });
   }
 
   loadEntradas() {
-    this.loadingEntradas = true;
-    this.errorEntradas = false;
-    this.emptyEntradas = false;
+    this.loadingEntradas.set(true);
+    this.errorEntradas.set(false);
+    this.emptyEntradas.set(false);
 
-    this.entradaService.getEntradasPorVeiculo(this.placa, this.currentPage).subscribe({
+    this.entradaService.getEntradasPorVeiculo(this.placa, this.currentPage()).subscribe({
       next: (response: any) => {
-        this.entradas = response?.content || (Array.isArray(response) ? response : []);
-        this.totalPages = response?.totalPages || 1;
-        this.totalElements = response?.totalElements || this.entradas.length;
-        this.first = response?.first ?? true;
-        this.last = response?.last ?? true;
-        this.loadingEntradas = false;
+        const items = response?.content || (Array.isArray(response) ? response : []);
+        this.entradas.set(items);
+        this.totalPages.set(response?.totalPages || 1);
+        this.totalElements.set(response?.totalElements || items.length);
+        this.first.set(response?.first ?? true);
+        this.last.set(response?.last ?? true);
+        this.loadingEntradas.set(false);
 
-        if (!this.entradas || this.entradas.length === 0) {
-          this.emptyEntradas = true;
+        if (!items || items.length === 0) {
+          this.emptyEntradas.set(true);
         }
-        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Erro ao buscar entradas', err);
-        this.errorEntradas = true;
-        this.loadingEntradas = false;
-        this.cdr.markForCheck();
+        this.errorEntradas.set(true);
+        this.loadingEntradas.set(false);
       }
     });
   }
 
   onPageChange(page: number) {
-    this.currentPage = page;
+    this.currentPage.set(page);
     this.loadEntradas();
   }
 
   openEntryDetails(entrada: any) {
-    this.selectedEntrada = entrada;
-    this.showModal = true;
+    this.selectedEntrada.set(entrada);
+    this.showModal.set(true);
   }
 
   closeModal() {
-    this.showModal = false;
-    this.selectedEntrada = null;
+    this.showModal.set(false);
+    this.selectedEntrada.set(null);
   }
 
   goBack() {

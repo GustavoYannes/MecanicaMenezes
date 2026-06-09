@@ -16,7 +16,7 @@
       <button 
         (click)="cancel.emit()"
         [disabled]="isSubmitting"
-        class="text-brand-muted hover:text-brand-primary p-2 hover:bg-black/5 rounded-full transition-colors focus:outline-none disabled:opacity-50"
+        class="text-brand-muted hover:text-brand-primary p-2 hover:bg-black/5 rounded-full transition-colors focus:outline-none disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -40,7 +40,7 @@
         type="button" 
         (click)="cancel.emit()"
         [disabled]="isSubmitting"
-        class="px-6 py-2.5 text-sm font-bold text-brand-primary hover:bg-black/5 rounded-xl transition-colors focus:outline-none disabled:opacity-50"
+        class="px-6 py-2.5 text-sm font-bold text-brand-primary hover:bg-black/5 rounded-xl transition-colors focus:outline-none disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
       >
         Cancelar
       </button>
@@ -49,7 +49,7 @@
         type="button" 
         (click)="confirm.emit()"
         [disabled]="isSubmitting"
-        class="px-6 py-2.5 text-sm font-bold text-white bg-[#EC5B13] hover:opacity-90 rounded-xl shadow-md transition-all active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#EC5B13]/20 flex items-center space-x-2 disabled:opacity-70"
+        class="px-6 py-2.5 text-sm font-bold text-white bg-[#EC5B13] hover:opacity-90 rounded-xl shadow-md transition-all active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#EC5B13]/20 flex items-center space-x-2 disabled:opacity-70 cursor-pointer disabled:cursor-not-allowed"
       >
         @if (isSubmitting) {
           <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

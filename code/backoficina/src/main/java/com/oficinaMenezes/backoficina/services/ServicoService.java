@@ -3,6 +3,7 @@ package com.oficinaMenezes.backoficina.services;
 import com.oficinaMenezes.backoficina.models.dtos.servico.CreateServicoDTO;
 import com.oficinaMenezes.backoficina.models.dtos.servico.EditarServicoDTO;
 import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoResponse;
+import com.oficinaMenezes.backoficina.models.dtos.servico.ServicoTotalDataResponse;
 import com.oficinaMenezes.backoficina.models.entities.Entrada;
 import com.oficinaMenezes.backoficina.models.entities.Funcionario;
 import com.oficinaMenezes.backoficina.models.entities.Servico;
@@ -11,11 +12,18 @@ import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaJaFinaliz
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExisteException;
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
 import com.oficinaMenezes.backoficina.models.exceptions.servico.ServicoNaoExisteException;
+import com.oficinaMenezes.backoficina.models.specifications.ServicoSpec;
 import com.oficinaMenezes.backoficina.repositories.EntradaRepository;
 import com.oficinaMenezes.backoficina.repositories.ServicoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,11 +70,45 @@ public class ServicoService {
         return servico.toServicoResponse();
     }
 
-    public Boolean primeiroServicoEntrada(Entrada entrada){
-        return !servicoRepository.existsByEntrada(entrada);
+    public ServicoResponse deletarServico(Long idServico){
+        Servico servico = servicoRepository.findById(idServico).orElse(null);
+        if (servico == null) throw new ServicoNaoExisteException();
+        servicoRepository.delete(servico);
+        return servico.toServicoResponse();
     }
+
+    public Boolean primeiroServicoEntrada(Entrada entrada){return !servicoRepository.existsByEntrada(entrada);}
 
     public List<Servico> servicoPorEntrada(Long entradaId) {return servicoRepository.findByEntradaId(entradaId);}
 
+    public ServicoTotalDataResponse servicoPorDataFuncionario(LocalDate inicio, LocalDate fim, Funcionario funcionario) {
+        List<Servico> servicosEntreInicioFim = servicoRepository.findByFuncionarioAndDataBetween(funcionario, inicio, fim);
+
+        int qtdServico = servicosEntreInicioFim.stream()
+                .mapToInt(Servico::getQuantidade)
+                .sum();
+
+        BigDecimal totalGerado = servicosEntreInicioFim.stream()
+                .map(Servico::valorTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new ServicoTotalDataResponse(
+                qtdServico,
+                totalGerado
+        );
+    }
+
+    public Page<ServicoResponse> getServico(LocalDate inicio, LocalDate fim, Funcionario funcionario, Entrada entrada, int page) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("nome").ascending());
+
+        Specification<Servico> specs = Specification
+                .where(ServicoSpec.dataMaiorOuIgual(inicio))
+                .and(ServicoSpec.dataMenorOuIgual(fim))
+                .and(ServicoSpec.funcionarioIgual(funcionario))
+                .and(ServicoSpec.entradaIgual(entrada));
+
+        return servicoRepository.findAll(specs, pageable)
+                .map(Servico::toServicoResponse);
+    }
 
 }

@@ -20,6 +20,7 @@ import { TotalSummary } from '../../components/total-summary/total-summary';
 import { ServiceForm } from '../../components/service-form/service-form';
 import { ReleaseVehicleModal } from '../../components/release-vehicle-modal/release-vehicle-modal';
 import { EditServiceModal } from '../../components/edit-service-modal/edit-service-modal';
+import { DeleteServiceModal } from '../../components/delete-service-modal/delete-service-modal';
 import { EditarServicoRequest } from '../../models/editar-servico-request.model';
 
 @Component({
@@ -33,7 +34,8 @@ import { EditarServicoRequest } from '../../models/editar-servico-request.model'
     TotalSummary,
     ServiceForm,
     ReleaseVehicleModal,
-    EditServiceModal
+    EditServiceModal,
+    DeleteServiceModal
   ],
   templateUrl: './vehicle-details.html'
 })
@@ -63,6 +65,12 @@ export class VehicleDetails implements OnInit {
   isEditingService = signal(false);
   editSuccess = signal(false);
   selectedServico = signal<Servico | null>(null);
+
+  // Delete Service State
+  showDeleteModal = signal(false);
+  isDeletingService = signal(false);
+  deleteSuccess = signal(false);
+  serviceToDelete = signal<Servico | null>(null);
 
   // Release and PDF States
   showReleaseModal = signal(false);
@@ -185,8 +193,42 @@ export class VehicleDetails implements OnInit {
     });
   }
 
-  onDeleteService(servico: any) {
-    // Implement delete confirmation logic here
+  onDeleteService(servico: Servico) {
+    if (!servico.id) {
+      alert('Não é possível excluir este serviço pois ele ainda não possui um identificador (ID).');
+      return;
+    }
+    this.serviceToDelete.set(servico);
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal.set(false);
+    this.serviceToDelete.set(null);
+    this.deleteSuccess.set(false);
+  }
+
+  confirmDeleteService() {
+    const servicoId = this.serviceToDelete()?.id;
+    if (!servicoId) return;
+
+    this.isDeletingService.set(true);
+    this.servicoService.deletarServico(servicoId).subscribe({
+      next: () => {
+        this.isDeletingService.set(false);
+        this.deleteSuccess.set(true);
+        this.loadData();
+        
+        setTimeout(() => {
+          this.closeDeleteModal();
+        }, 1500);
+      },
+      error: (err) => {
+        console.error('Erro ao excluir serviço', err);
+        this.isDeletingService.set(false);
+        alert('Erro ao excluir o serviço. Tente novamente.');
+      }
+    });
   }
 
   // --- Release Vehicle Flow ---

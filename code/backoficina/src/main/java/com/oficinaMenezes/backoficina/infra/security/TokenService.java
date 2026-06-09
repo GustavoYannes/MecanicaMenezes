@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 public class TokenService {
 
-    @Value("{api.security.token.secret}")
+    @Value("${api.security.token.secret}")
     private String secret;
 
     public String generateToken(Funcionario funcionario) {
@@ -26,6 +26,7 @@ public class TokenService {
                     .withIssuer("oficina-api")
                     .withSubject(funcionario.getUuid().toString())
                     .withClaim("nome", funcionario.getNome())
+                    .withClaim("role", funcionario.getRole())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
             return token;

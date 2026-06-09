@@ -49,3 +49,12 @@ Thumbs.db
 coverage/
 .tmp/
 .temp/
+
+# Ferramentas locais / agentes
+code/backoficina/.codex/
+code/frontOficina/.agent/
+code/frontOficina/.antigravitycli/
+
+# OpenSpec
+code/backoficina/openspec/
+code/frontOficina/openspec/

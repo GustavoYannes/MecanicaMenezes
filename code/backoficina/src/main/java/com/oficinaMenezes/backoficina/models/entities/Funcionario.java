@@ -1,5 +1,7 @@
 package com.oficinaMenezes.backoficina.models.entities;
 
+import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioListResponse;
+import com.oficinaMenezes.backoficina.models.dtos.funcionario.FuncionarioResponse;
 import com.oficinaMenezes.backoficina.models.entities.enums.ERole;
 import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
@@ -47,10 +49,25 @@ public class Funcionario implements UserDetails {
         return uuid;
     }
 
-    public String getNome(){
-        return nome;
+    public String getNome(){return nome;}
+
+    public FuncionarioListResponse toListResponse(){
+        return new FuncionarioListResponse(
+                this.uuid,
+                this.nome
+        );
     }
 
+    public FuncionarioResponse toResponse(){
+        return new FuncionarioResponse(
+                this.nome,
+                this.cpf,
+                this.email,
+                this.telefone
+        );
+    }
+
+    public String getRole(){return role.getRole();}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

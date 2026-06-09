@@ -44,7 +44,7 @@
       </div>
 
       <!-- Serviços (Loading) -->
-      @if (loading) {
+      @if (loading()) {
         <div class="flex flex-col items-center justify-center py-10">
           <svg class="animate-spin h-8 w-8 text-brand-accent mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -55,7 +55,7 @@
       }
 
       <!-- Serviços (Error) -->
-      @if (!loading && error) {
+      @if (!loading() && error()) {
         <div class="flex flex-col items-center justify-center py-10 text-center">
           <svg class="h-10 w-10 text-red-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -65,7 +65,7 @@
       }
 
       <!-- Serviços (Empty) -->
-      @if (!loading && !error && servicos.length === 0) {
+      @if (!loading() && !error() && servicos().length === 0) {
         <div class="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-[#D5C2B3] rounded-xl bg-[#F5ECE5]">
           <svg class="h-12 w-12 text-brand-muted mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
@@ -76,7 +76,7 @@
       }
 
       <!-- Tabela de Serviços -->
-      @if (!loading && !error && servicos.length > 0) {
+      @if (!loading() && !error() && servicos().length > 0) {
         <div>
           <h3 class="text-lg font-bold text-brand-primary mb-4 font-inter-tight">Serviços Realizados</h3>
           
@@ -93,7 +93,7 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-[#D5C2B3] bg-white">
-                @for (servico of servicos; track servico.nome) {
+                @for (servico of servicos(); track servico.nome) {
                   <tr class="hover:bg-white transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-brand-primary">{{ servico.nome }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-brand-text">{{ servico.data | date:'dd/MM/yyyy' }}</td>
@@ -110,7 +110,7 @@
 
           <!-- Mobile Cards -->
           <div class="sm:hidden space-y-4">
-            @for (servico of servicos; track servico.nome) {
+            @for (servico of servicos(); track servico.nome) {
               <div class="bg-white rounded-xl shadow-sm border border-[#D5C2B3] p-4 flex flex-col">
                 <div class="flex justify-between items-start mb-2">
                   <h4 class="font-bold text-brand-primary text-sm">{{ servico.nome }}</h4>
@@ -135,9 +135,9 @@
     <div class="px-6 py-4 bg-[#EBE0D8] border-t border-[#D5C2B3] sm:flex sm:justify-between sm:items-center">
       <!-- Total -->
       <div class="mb-4 sm:mb-0 flex items-center">
-        @if (!loading && !error && servicos.length > 0) {
+        @if (!loading() && !error() && servicos().length > 0) {
           <span class="text-sm font-semibold text-brand-muted uppercase tracking-wider mr-3">Valor Total</span>
-          <span class="text-xl font-bold text-brand-accent">{{ valorTotalEntrada | currency:'BRL':'symbol':'1.2-2' }}</span>
+          <span class="text-xl font-bold text-brand-accent">{{ valorTotalEntrada() | currency:'BRL':'symbol':'1.2-2' }}</span>
         }
       </div>
       
@@ -151,10 +151,10 @@
         </button>
         <button 
           (click)="generatePdf()"
-          [disabled]="isGeneratingPdf || servicos.length === 0"
+          [disabled]="isGeneratingPdf() || servicos().length === 0"
           class="w-full sm:w-auto px-5 py-2.5 text-white bg-brand-accent hover:opacity-90 rounded-xl font-bold shadow-sm transition-all focus:outline-none flex justify-center items-center space-x-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          @if (isGeneratingPdf) {
+          @if (isGeneratingPdf()) {
             <svg class="animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

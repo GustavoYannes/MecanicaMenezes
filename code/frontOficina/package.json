@@ -2,11 +2,15 @@
   "name": "front-oficina",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "node scripts/set-env.js && ng serve",
+    "dev": "node scripts/set-env.js && ng serve",
+    "dev:network": "node scripts/set-env.js && ng serve --configuration network --host 0.0.0.0 --port 4200",
+    "serve:network": "node scripts/set-env.js && ng serve --configuration network --host 0.0.0.0 --port 4200",
+    "build": "node scripts/set-env.js && ng build",
+    "build:prod": "node scripts/set-env.js && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "node scripts/set-env.js && ng test",
+    "postinstall": "node scripts/set-env.js"
   },
   "private": true,
   "packageManager": "npm@10.9.2",

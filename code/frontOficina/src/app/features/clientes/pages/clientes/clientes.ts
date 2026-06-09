@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClienteService } from '../../services/cliente';
 import { Cliente } from '../../models/cliente.model';
@@ -22,18 +22,18 @@ import { Pagination } from '../../../../shared/components/pagination/pagination'
 })
 export class Clientes implements OnInit {
   private clienteService = inject(ClienteService);
-  private cdr = inject(ChangeDetectorRef);
 
-  clientes: Cliente[] = [];
-  loading = false;
-  error = false;
-  empty = false;
+  // State signals — required for zoneless change detection
+  clientes = signal<Cliente[]>([]);
+  loading = signal(false);
+  error = signal(false);
+  empty = signal(false);
 
-  currentPage = 0;
-  totalPages = 0;
-  totalElements = 0;
-  first = true;
-  last = true;
+  currentPage = signal(0);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  first = signal(true);
+  last = signal(true);
   
   searchQuery = '';
 
@@ -47,42 +47,38 @@ export class Clientes implements OnInit {
   }
 
   loadClientes() {
-    this.loading = true;
-    this.error = false;
-    this.empty = false;
+    this.loading.set(true);
+    this.error.set(false);
+    this.empty.set(false);
 
-    this.clienteService.getClientes(this.currentPage, this.searchQuery)
+    this.clienteService.getClientes(this.currentPage(), this.searchQuery)
       .subscribe({
         next: (response: any) => {
-          this.clientes = response?.content || (Array.isArray(response) ? response : []);
-          this.totalPages = response?.totalPages || 1;
-          this.totalElements = response?.totalElements || this.clientes.length;
-          this.first = response?.first ?? true;
-          this.last = response?.last ?? true;
-          this.loading = false;
-          
-          if (!this.clientes || this.clientes.length === 0) {
-            this.empty = true;
-          }
-          this.cdr.markForCheck();
+          const items = response?.content || (Array.isArray(response) ? response : []);
+          this.clientes.set(items);
+          this.totalPages.set(response?.totalPages || 1);
+          this.totalElements.set(response?.totalElements || items.length);
+          this.first.set(response?.first ?? true);
+          this.last.set(response?.last ?? true);
+          this.loading.set(false);
+          this.empty.set(!items || items.length === 0);
         },
         error: (err) => {
           console.error('Erro ao buscar clientes:', err);
-          this.error = true;
-          this.loading = false;
-          this.cdr.markForCheck();
+          this.error.set(true);
+          this.loading.set(false);
         }
       });
   }
 
   onSearch(query: string) {
     this.searchQuery = query;
-    this.currentPage = 0; // Volta para a página 0 ao pesquisar
+    this.currentPage.set(0);
     this.loadClientes();
   }
 
   onPageChange(page: number) {
-    this.currentPage = page;
+    this.currentPage.set(page);
     this.loadClientes();
   }
 }

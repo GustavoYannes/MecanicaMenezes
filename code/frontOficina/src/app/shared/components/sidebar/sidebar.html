@@ -20,7 +20,7 @@
   <!-- Navigation Menu -->
   <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
     <a 
-      *ngFor="let item of menuItems" 
+      *ngFor="let item of menuItems; trackBy: trackByPath" 
       [routerLink]="item.path" 
       routerLinkActive="bg-brand-surface text-brand-primary font-semibold shadow-sm"
       [routerLinkActiveOptions]="{exact: false}"

@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class ClienteLookupService {
   private http = inject(HttpClient);
-  private readonly API_URL = `${environment.apiUrl}/api/cliente`;
+  private readonly API_URL = `${environment.apiUrl}/cliente`;
 
   searchByCpf(cpf: string): Observable<ClienteSearchPage> {
     return this.http.get<ClienteSearchPage>(this.API_URL, {

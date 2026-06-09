@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject, ChangeDetectorRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, inject, signal, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { VeiculoService } from '../../services/veiculo.service';
@@ -36,19 +36,19 @@ export class VehicleListView implements OnInit, OnChanges {
 
   private veiculoService = inject(VeiculoService);
   private modalService = inject(VehicleModalService);
-  private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  veiculos: VeiculoListItem[] = [];
-  loading = false;
-  error = false;
-  empty = false;
+  // State signals — required for zoneless change detection
+  veiculos = signal<VeiculoListItem[]>([]);
+  loading = signal(false);
+  error = signal(false);
+  empty = signal(false);
 
-  currentPage = 0;
-  totalPages = 0;
-  totalElements = 0;
-  first = true;
-  last = true;
+  currentPage = signal(0);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  first = signal(true);
+  last = signal(true);
 
   searchQuery = '';
   selectedStatusFilter = ''; // '' means 'Todos'
@@ -58,67 +58,61 @@ export class VehicleListView implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Reload if defaultStatuses change dynamically, though they usually won't
     if (changes['defaultStatuses'] && !changes['defaultStatuses'].firstChange) {
-      this.currentPage = 0;
+      this.currentPage.set(0);
       this.loadVeiculos();
     }
   }
 
   loadVeiculos() {
-    this.loading = true;
-    this.error = false;
-    this.empty = false;
+    this.loading.set(true);
+    this.error.set(false);
+    this.empty.set(false);
 
     let statusesToSearch = [...this.defaultStatuses];
 
-    // Se o filtro estiver ativo, sobrepõe a busca por status
     if (this.showStatusFilter) {
       if (this.selectedStatusFilter) {
         statusesToSearch = [this.selectedStatusFilter];
       } else {
-        statusesToSearch = []; // Todos
+        statusesToSearch = [];
       }
     }
 
-    this.veiculoService.findAllVeiculos(this.currentPage, this.searchQuery, statusesToSearch)
+    this.veiculoService.findAllVeiculos(this.currentPage(), this.searchQuery, statusesToSearch)
       .subscribe({
         next: (response: any) => {
-          this.veiculos = response?.content || (Array.isArray(response) ? response : []);
-          this.totalPages = response?.totalPages || 1;
-          this.totalElements = response?.totalElements || this.veiculos.length;
-          this.first = response?.first ?? true;
-          this.last = response?.last ?? true;
-          this.loading = false;
-
-          if (!this.veiculos || this.veiculos.length === 0) {
-            this.empty = true;
-          }
-          this.cdr.markForCheck();
+          const items = response?.content || (Array.isArray(response) ? response : []);
+          this.veiculos.set(items);
+          this.totalPages.set(response?.totalPages || 1);
+          this.totalElements.set(response?.totalElements || items.length);
+          this.first.set(response?.first ?? true);
+          this.last.set(response?.last ?? true);
+          this.loading.set(false);
+          this.empty.set(!items || items.length === 0);
         },
         error: (err) => {
           console.error('Erro ao buscar veículos:', err);
-          this.error = true;
-          this.loading = false;
-          this.cdr.markForCheck();
+          this.error.set(true);
+          this.loading.set(false);
         }
       });
   }
 
   onSearch(query: string) {
     this.searchQuery = query;
-    this.currentPage = 0;
+    this.currentPage.set(0);
     this.loadVeiculos();
   }
 
   onStatusChange(event: any) {
     this.selectedStatusFilter = event.target.value;
-    this.currentPage = 0;
+    this.currentPage.set(0);
     this.loadVeiculos();
   }
 
   onPageChange(page: number) {
-    this.currentPage = page;
+    this.currentPage.set(page);
     this.loadVeiculos();
   }
 

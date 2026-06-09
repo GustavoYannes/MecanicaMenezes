@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class ClienteService {
   private http = inject(HttpClient);
-  private readonly API_URL = `${environment.apiUrl}/api/cliente`;
+  private readonly API_URL = `${environment.apiUrl}/cliente`;
 
   getClientes(page: number = 0, nomeCompleto: string = ''): Observable<ClientePageResponse> {
     let params = new HttpParams().set('page', page.toString());
