@@ -28,7 +28,7 @@ const envPath = path.join(__dirname, '../.env');
 const dotenv = parseEnv(envPath);
 
 const apiUrlLocal = dotenv.API_URL || 'http://localhost:8080/api';
-const apiUrlNetwork = dotenv.API_URL_NETWORK || 'http://SEU_IP_LOCAL:8080/api';
+const apiUrlNetwork = dotenv.API_URL_NETWORK;
 
 const envDir = path.join(__dirname, '../src/environments');
 if (!fs.existsSync(envDir)) {
@@ -52,9 +52,17 @@ const envDevTsContent = `export const environment = {
 fs.writeFileSync(path.join(envDir, 'environment.development.ts'), envDevTsContent);
 
 // Generate environment.network.ts
+// When API_URL_NETWORK is not configured, the browser host is used automatically.
+// This lets phones access the API through the same IP used to open the Angular app.
+const envNetworkApiUrl = apiUrlNetwork
+  ? `'${apiUrlNetwork}'`
+  : `(typeof window !== 'undefined' && window.location.hostname)
+    ? \`http://\${window.location.hostname}:8080/api\`
+    : 'http://localhost:8080/api'`;
+
 const envNetworkTsContent = `export const environment = {
   production: false,
-  apiUrl: '${apiUrlNetwork}'
+  apiUrl: ${envNetworkApiUrl}
 };
 `;
 fs.writeFileSync(path.join(envDir, 'environment.network.ts'), envNetworkTsContent);
