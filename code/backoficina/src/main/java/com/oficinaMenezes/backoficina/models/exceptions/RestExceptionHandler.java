@@ -10,6 +10,7 @@ import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoExiste
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.EntradaNaoFoiFechada;
 import com.oficinaMenezes.backoficina.models.exceptions.entrada.VeiculoEmAtendimentoException;
 
+import com.oficinaMenezes.backoficina.models.exceptions.dashboard.PeriodoDashboardInvalidoException;
 import com.oficinaMenezes.backoficina.models.exceptions.funcionario.FuncionarioNaoExiste;
 import com.oficinaMenezes.backoficina.models.exceptions.veiculo.VeiculoNaoExisteException;
 import org.springframework.http.HttpHeaders;
@@ -139,6 +140,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now().toString()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(newError);
+    }
+
+    @ExceptionHandler(PeriodoDashboardInvalidoException.class)
+    private ResponseEntity<ErrorMessageDTO> periodoDashboardInvalidoHandler(PeriodoDashboardInvalidoException ex) {
+        ErrorMessageDTO newError = new ErrorMessageDTO(
+                ex.getMessage(),
+                LocalDateTime.now().toString()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newError);
     }
 
 }

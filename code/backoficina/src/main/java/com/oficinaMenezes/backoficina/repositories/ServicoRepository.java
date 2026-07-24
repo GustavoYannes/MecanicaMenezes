@@ -21,5 +21,6 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> , JpaSpe
             LocalDate dataFim
     );
 
+    List<Servico> findByDataBetween(LocalDate dataInicio, LocalDate dataFim);
 
 }

@@ -40,6 +40,10 @@ public class Entrada {
 
     public EStatusEntrada getStatus() {return status;}
 
+    public LocalDate getDataEntrada() {return dataEntrada;}
+
+    public LocalDate getDataSaida() {return dataSaida;}
+
     public void finalizarEntrada(){
         this.status = EStatusEntrada.FECHADA;
         this.dataSaida = LocalDate.now();

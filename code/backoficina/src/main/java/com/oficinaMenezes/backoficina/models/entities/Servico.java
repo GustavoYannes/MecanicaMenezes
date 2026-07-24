@@ -44,6 +44,7 @@ public class Servico {
     }
 
     public Long getId() {return id;}
+    public LocalDate getData() {return data;}
     public int getQuantidade(){return quantidade;}
     public BigDecimal getValorUnidade() {return valor;}
     public String getNome() {return nome;}

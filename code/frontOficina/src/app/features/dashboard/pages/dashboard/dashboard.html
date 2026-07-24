@@ -1,5 +1,192 @@
-<div class="h-full flex flex-col items-center justify-center text-brand-muted">
-  <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-  <h2 class="text-xl font-medium">Bem vindo ao Dashboard</h2>
-  <p class="text-sm mt-2">Navegue na barra lateral para explorar as seções.</p>
+<div class="flex flex-col gap-4 md:gap-6 animate-in fade-in duration-500 pb-8">
+  <!-- Header & Filters -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-brand-primary">Dashboard</h1>
+      <p class="text-brand-muted text-xs md:text-sm">Visão geral do desempenho da oficina.</p>
+    </div>
+
+    <!-- Date Selectors -->
+    <div class="grid grid-cols-2 lg:flex items-center gap-2 bg-brand-background p-1.5 rounded-xl shadow-sm border border-brand-input overflow-hidden">
+      <div class="flex flex-col px-2 py-0.5 border-r border-brand-input lg:border-r-0">
+        <label for="inicio" class="text-[10px] font-bold text-brand-muted uppercase leading-tight">De</label>
+        <input 
+          type="date" 
+          id="inicio" 
+          [value]="inicio()" 
+          (change)="onDateChange($event, 'inicio')"
+          class="text-xs md:text-sm bg-transparent border-none p-0 focus:ring-0 text-brand-primary cursor-pointer w-full min-h-[20px]"
+        >
+      </div>
+      <div class="w-px h-6 bg-brand-input hidden lg:block"></div>
+      <div class="flex flex-col px-2 py-0.5">
+        <label for="fim" class="text-[10px] font-bold text-brand-muted uppercase leading-tight">Até</label>
+        <input 
+          type="date" 
+          id="fim" 
+          [value]="fim()" 
+          (change)="onDateChange($event, 'fim')"
+          class="text-xs md:text-sm bg-transparent border-none p-0 focus:ring-0 text-brand-primary cursor-pointer w-full min-h-[20px]"
+        >
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="h-24 md:h-32 bg-brand-background animate-pulse rounded-xl md:rounded-2xl border border-brand-input"></div>
+      }
+    </div>
+    <div class="h-[300px] md:h-[400px] bg-brand-background animate-pulse rounded-xl md:rounded-2xl border border-brand-input"></div>
+  } @else if (error()) {
+    <div class="flex flex-col items-center justify-center py-12 md:py-20 bg-brand-background rounded-xl md:rounded-2xl border border-dashed border-brand-input text-brand-muted text-center px-4">
+      <svg class="w-10 h-10 md:w-12 md:h-12 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      <p class="font-medium text-sm md:text-base">Erro ao carregar os dados do dashboard.</p>
+      <button (click)="loadDashboardData()" class="mt-4 text-brand-accent hover:underline font-semibold text-sm">Tentar novamente</button>
+    </div>
+  } @else if (dashboardData()) {
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <!-- Carros Atendidos -->
+      <div class="bg-brand-background p-4 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-brand-input group hover:border-brand-accent transition-colors">
+        <div class="flex items-center justify-between mb-1.5 md:mb-2">
+          <span class="text-[10px] md:text-xs font-bold text-brand-muted uppercase tracking-wider">Carros</span>
+          <div class="p-1.5 md:p-2 bg-orange-50 rounded-lg text-brand-accent">
+            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
+          </div>
+        </div>
+        <div class="text-xl md:text-3xl font-bold text-brand-primary leading-tight">{{ dashboardData()?.resumo?.quantidadeCarrosAtendidos }}</div>
+        <div class="text-[10px] md:text-xs text-brand-muted mt-0.5">No período</div>
+      </div>
+
+      <!-- Tempo Médio -->
+      <div class="bg-brand-background p-4 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-brand-input group hover:border-brand-primary transition-colors">
+        <div class="flex items-center justify-between mb-1.5 md:mb-2">
+          <span class="text-[10px] md:text-xs font-bold text-brand-muted uppercase tracking-wider">Média</span>
+          <div class="p-1.5 md:p-2 bg-slate-100 rounded-lg text-brand-primary">
+            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+        </div>
+        <div class="text-xl md:text-3xl font-bold text-brand-primary leading-tight">{{ dashboardData()?.resumo?.tempoMedioPermanenciaDias | number:'1.1-1' }} <span class="text-sm md:text-lg font-medium text-brand-muted">dias</span></div>
+        <div class="text-[10px] md:text-xs text-brand-muted mt-0.5">Permanência</div>
+      </div>
+
+      <!-- Entradas Abertas -->
+      <div class="bg-brand-background p-4 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-brand-input group hover:border-blue-500 transition-colors">
+        <div class="flex items-center justify-between mb-1.5 md:mb-2">
+          <span class="text-[10px] md:text-xs font-bold text-brand-muted uppercase tracking-wider">Abertas</span>
+          <div class="p-1.5 md:p-2 bg-blue-50 rounded-lg text-blue-500">
+            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z"></path></svg>
+          </div>
+        </div>
+        <div class="text-xl md:text-3xl font-bold text-brand-primary leading-tight">{{ dashboardData()?.entradas?.abertas }}</div>
+        <div class="text-[10px] md:text-xs text-blue-500 font-medium mt-0.5">Em serviço</div>
+      </div>
+
+      <!-- Entradas Fechadas -->
+      <div class="bg-brand-background p-4 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-brand-input group hover:border-green-500 transition-colors">
+        <div class="flex items-center justify-between mb-1.5 md:mb-2">
+          <span class="text-[10px] md:text-xs font-bold text-brand-muted uppercase tracking-wider">Fechadas</span>
+          <div class="p-1.5 md:p-2 bg-green-50 rounded-lg text-green-500">
+            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+        </div>
+        <div class="text-xl md:text-3xl font-bold text-brand-primary leading-tight">{{ dashboardData()?.entradas?.fechadas }}</div>
+        <div class="text-[10px] md:text-xs text-brand-muted mt-0.5">Concluídas</div>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="bg-brand-background p-4 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-brand-input">
+      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6 md:mb-8">
+        <div>
+          <h3 class="text-base md:text-lg font-bold text-brand-primary">Evolução de Performance</h3>
+          <p class="text-[10px] md:text-sm text-brand-muted">Acompanhamento de {{ metricaTipo() === 'faturamento' ? 'receita' : 'volume de serviços' }}</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <!-- Métrica Toggle -->
+          <div class="flex items-center gap-1 bg-brand-input/30 p-1 rounded-lg">
+            <button 
+              (click)="setMetricaTipo('faturamento')"
+              [class.bg-brand-surface]="metricaTipo() === 'faturamento'"
+              [class.shadow-sm]="metricaTipo() === 'faturamento'"
+              [class.text-brand-accent]="metricaTipo() === 'faturamento'"
+              [class.text-brand-muted]="metricaTipo() !== 'faturamento'"
+              class="flex-1 px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <div class="w-1.5 h-1.5 rounded-full bg-brand-accent" *ngIf="metricaTipo() === 'faturamento'"></div>
+              Faturamento
+            </button>
+            <button 
+              (click)="setMetricaTipo('quantidadeServicos')"
+              [class.bg-brand-surface]="metricaTipo() === 'quantidadeServicos'"
+              [class.shadow-sm]="metricaTipo() === 'quantidadeServicos'"
+              [class.text-brand-primary]="metricaTipo() === 'quantidadeServicos'"
+              [class.text-brand-muted]="metricaTipo() !== 'quantidadeServicos'"
+              class="flex-1 px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold rounded-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <div class="w-1.5 h-1.5 rounded-full bg-brand-primary" *ngIf="metricaTipo() === 'quantidadeServicos'"></div>
+              Serviços
+            </button>
+          </div>
+
+          <div class="hidden sm:block w-px h-6 bg-brand-input"></div>
+
+          <!-- Período Toggle -->
+          <div class="flex items-center gap-1 bg-brand-input/30 p-1 rounded-lg">
+            <button 
+              (click)="setEvolucaoTipo('diaria')"
+              [class.bg-brand-surface]="evolucaoTipo() === 'diaria'"
+              [class.shadow-sm]="evolucaoTipo() === 'diaria'"
+              [class.text-brand-primary]="evolucaoTipo() === 'diaria'"
+              [class.text-brand-muted]="evolucaoTipo() !== 'diaria'"
+              class="flex-1 px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md transition-all cursor-pointer text-center"
+            >
+              Dia
+            </button>
+            <button 
+              (click)="setEvolucaoTipo('semanal')"
+              [class.bg-brand-surface]="evolucaoTipo() === 'semanal'"
+              [class.shadow-sm]="evolucaoTipo() === 'semanal'"
+              [class.text-brand-primary]="evolucaoTipo() === 'semanal'"
+              [class.text-brand-muted]="evolucaoTipo() !== 'semanal'"
+              class="px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md transition-all cursor-pointer text-center"
+            >
+              Sem
+            </button>
+            <button 
+              (click)="setEvolucaoTipo('mensal')"
+              [class.bg-brand-surface]="evolucaoTipo() === 'mensal'"
+              [class.shadow-sm]="evolucaoTipo() === 'mensal'"
+              [class.text-brand-primary]="evolucaoTipo() === 'mensal'"
+              [class.text-brand-muted]="evolucaoTipo() !== 'mensal'"
+              class="flex-1 px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-md transition-all cursor-pointer text-center"
+            >
+              Mês
+            </button>
+          </div>
+        </div>
+      </div>
+
+      @if (chartOptions()) {
+        <div class="w-full overflow-hidden">
+          <apx-chart
+            [series]="chartOptions()!.series!"
+            [chart]="chartOptions()!.chart!"
+            [xaxis]="chartOptions()!.xaxis!"
+            [yaxis]="chartOptions()!.yaxis!"
+            [dataLabels]="chartOptions()!.dataLabels!"
+            [grid]="chartOptions()!.grid!"
+            [stroke]="chartOptions()!.stroke!"
+            [colors]="chartOptions()!.colors!"
+            [tooltip]="chartOptions()!.tooltip!"
+            [legend]="chartOptions()!.legend!"
+            [fill]="chartOptions()!.fill!"
+          ></apx-chart>
+        </div>
+      }
+    </div>
+  }
 </div>

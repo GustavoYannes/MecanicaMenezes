@@ -10,6 +10,8 @@ import com.oficinaMenezes.backoficina.models.entities.Entrada;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,5 +20,11 @@ public interface EntradaRepository extends JpaRepository<Entrada, Long>{
     Optional<Entrada> findByVeiculoAndStatus(Veiculo veiculo, EStatusEntrada status);
 
     Page<Entrada> findByVeiculo(Veiculo veiculo, Pageable pageable);
+
+    long countByStatusAndDataEntradaBetween(EStatusEntrada status, LocalDate inicio, LocalDate fim);
+
+    long countByStatusAndDataSaidaBetween(EStatusEntrada status, LocalDate inicio, LocalDate fim);
+
+    List<Entrada> findByStatusAndDataSaidaBetween(EStatusEntrada status, LocalDate inicio, LocalDate fim);
     
 }
