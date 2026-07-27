@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions EnableDelayedExpansion
 title Mecanica Menezes - Iniciar Sistema
 
 cd /d "%~dp0\.."
@@ -10,9 +10,13 @@ echo Sistema iniciando...
 echo ====================================
 echo.
 
-if not exist "frontOficina\package.json" (
-  echo ERRO: Este script deve ser executado a partir do projeto Mecanica Menezes.
-  echo Pasta esperada nao encontrada: frontOficina\package.json
+if not exist "frontOficina\dist\frontOficina\browser\index.html" (
+  echo ERRO: Build estatico do front-end nao encontrado.
+  echo Pasta esperada: frontOficina\dist\frontOficina\browser
+  echo.
+  echo Gere o build em uma maquina com Node moderno antes de levar para a oficina:
+  echo   cd frontOficina
+  echo   npm run build:prod
   echo.
   pause
   exit /b 1
@@ -28,24 +32,6 @@ if not exist "backoficina\pom.xml" (
 
 echo Verificando dependencias...
 
-where node >nul 2>nul
-if errorlevel 1 (
-  echo ERRO: Node.js nao encontrado.
-  echo Instale o Node.js e tente novamente.
-  echo.
-  pause
-  exit /b 1
-)
-
-where npm >nul 2>nul
-if errorlevel 1 (
-  echo ERRO: NPM nao encontrado.
-  echo Instale o Node.js com NPM e tente novamente.
-  echo.
-  pause
-  exit /b 1
-)
-
 where java >nul 2>nul
 if errorlevel 1 (
   echo ERRO: Java nao encontrado.
@@ -55,14 +41,27 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "frontOficina\node_modules" (
-  echo ERRO: Dependencias do front-end nao instaladas.
-  echo Execute este comando uma vez:
-  echo   cd frontOficina
-  echo   npm install
-  echo.
-  pause
-  exit /b 1
+set "PYTHON_CMD="
+where py >nul 2>nul
+if not errorlevel 1 set "PYTHON_CMD=py -3 -m http.server 4200"
+
+if not defined PYTHON_CMD (
+  where python >nul 2>nul
+  if errorlevel 1 (
+    echo ERRO: Python nao encontrado.
+    echo Instale Python ou use outro servidor estatico para a pasta frontOficina\dist\frontOficina\browser.
+    echo.
+    pause
+    exit /b 1
+  )
+
+  for /f "tokens=2 delims= " %%V in ('python --version 2^>^&1') do set "PYTHON_VERSION=%%V"
+  echo !PYTHON_VERSION! | findstr /R "^3\." >nul 2>nul
+  if not errorlevel 1 (
+    set "PYTHON_CMD=python -m http.server 4200"
+  ) else (
+    set "PYTHON_CMD=python -m SimpleHTTPServer 4200"
+  )
 )
 
 if not exist "backoficina\.env" (
@@ -72,8 +71,13 @@ if not exist "backoficina\.env" (
   echo.
 )
 
-for /f "usebackq delims=" %%I in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "$ip = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' -and $_.IPAddress -notlike '0.*' -and $_.AddressState -eq 'Preferred' } | Sort-Object InterfaceIndex | Select-Object -First 1 -ExpandProperty IPAddress; if (-not $ip) { $ip = 'localhost' }; Write-Output $ip"`) do set "LOCAL_IP=%%I"
-
+set "LOCAL_IP=localhost"
+for /f "tokens=2 delims=:" %%I in ('ipconfig ^| findstr /I "IPv4"') do (
+  set "LOCAL_IP=%%I"
+  goto :ip_found
+)
+:ip_found
+for /f "tokens=* delims= " %%A in ("%LOCAL_IP%") do set "LOCAL_IP=%%A"
 if not defined LOCAL_IP set "LOCAL_IP=localhost"
 
 echo.
@@ -86,7 +90,7 @@ echo API:                  http://%LOCAL_IP%:8080/api
 echo ====================================
 echo.
 
-call :check_port 4200 "front-end Angular"
+call :check_port 4200 "front-end estatico"
 if errorlevel 1 exit /b 1
 
 call :check_port 8080 "back-end Spring Boot"
@@ -98,8 +102,8 @@ if exist "backoficina\mvnw.cmd" set "BACK_COMMAND=call mvnw.cmd spring-boot:run"
 echo Abrindo janela do back-end...
 start "Mecanica Menezes - Back-end" cmd /k "cd /d ""%CD%\backoficina"" && set SERVER_ADDRESS=0.0.0.0&& set SERVER_PORT=8080&& set CORS_ALLOWED_ORIGINS=http://localhost:4200,http://%LOCAL_IP%:4200&& %BACK_COMMAND%"
 
-echo Abrindo janela do front-end...
-start "Mecanica Menezes - Front-end" cmd /k "cd /d ""%CD%\frontOficina"" && npm run dev:network"
+echo Abrindo janela do front-end estatico...
+start "Mecanica Menezes - Front-end" cmd /k "cd /d ""%CD%\frontOficina\dist\frontOficina\browser"" && %PYTHON_CMD%"
 
 echo.
 echo Sistema solicitado para iniciar.

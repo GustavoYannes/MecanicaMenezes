@@ -10,7 +10,7 @@ echo.
 echo Este script procura processos escutando nas portas 4200 e 8080.
 echo.
 
-call :kill_port 4200 "front-end Angular"
+call :kill_port 4200 "front-end estatico Python"
 call :kill_port 8080 "back-end Spring Boot"
 
 echo.
