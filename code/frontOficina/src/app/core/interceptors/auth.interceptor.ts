@@ -5,15 +5,17 @@ import { TokenService } from '../services/token.service';
 import { AuthService } from '../services/auth.service';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
   const router = inject(Router);
   const injector = inject(Injector);
   const token = tokenService.getToken();
+  const isApiRequest = req.url.startsWith(environment.apiUrl) || req.url.startsWith('/api/');
 
   let clonedReq = req;
-  if (token) {
+  if (token && isApiRequest) {
     clonedReq = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });
@@ -21,6 +23,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(clonedReq).pipe(
     catchError((error: HttpErrorResponse) => {
+      if (!isApiRequest) {
+        return throwError(() => error);
+      }
+
       // Ignorar requisições para o próprio endpoint de login
       if (req.url.includes('/api/auth/login')) {
         return throwError(() => error);

@@ -42,14 +42,14 @@ if errorlevel 1 (
 )
 
 set "PYTHON_CMD="
-where py >nul 2>nul
-if not errorlevel 1 set "PYTHON_CMD=py -3 -m http.server 4200"
+py -3 --version >nul 2>nul
+if not errorlevel 1 set "PYTHON_CMD=py -3 scripts\spa-server.py dist\frontOficina\browser 4200"
 
 if not defined PYTHON_CMD (
   where python >nul 2>nul
   if errorlevel 1 (
     echo ERRO: Python nao encontrado.
-    echo Instale Python ou use outro servidor estatico para a pasta frontOficina\dist\frontOficina\browser.
+    echo Instale Python 3 para servir o front-end Angular.
     echo.
     pause
     exit /b 1
@@ -58,12 +58,16 @@ if not defined PYTHON_CMD (
   for /f "tokens=2 delims= " %%V in ('python --version 2^>^&1') do set "PYTHON_VERSION=%%V"
   echo !PYTHON_VERSION! | findstr /R "^3\." >nul 2>nul
   if not errorlevel 1 (
-    set "PYTHON_CMD=python -m http.server 4200"
+    set "PYTHON_CMD=python scripts\spa-server.py dist\frontOficina\browser 4200"
   ) else (
-    set "PYTHON_CMD=python -m SimpleHTTPServer 4200"
+    echo ERRO: Python 3 nao encontrado.
+    echo O servidor padrao do Python 2 nao suporta as rotas do Angular, como /login e /dashboard.
+    echo Instale Python 3 ou use IIS com o web.config gerado no build.
+    echo.
+    pause
+    exit /b 1
   )
 )
-
 if not exist "backoficina\.env" (
   echo AVISO: backoficina\.env nao encontrado.
   echo O back-end pode falhar se DB_URL, DB_USERNAME, DB_PASSWORD, JWT_SECRET e CORS_ALLOWED_ORIGINS nao estiverem configurados.
@@ -96,14 +100,14 @@ if errorlevel 1 exit /b 1
 call :check_port 8080 "back-end Spring Boot"
 if errorlevel 1 exit /b 1
 
-set "BACK_COMMAND=call mvn spring-boot:run"
-if exist "backoficina\mvnw.cmd" set "BACK_COMMAND=call mvnw.cmd spring-boot:run"
+set "BACK_COMMAND=mvn spring-boot:run"
+if exist "backoficina\mvnw.cmd" set "BACK_COMMAND=mvnw.cmd spring-boot:run"
 
 echo Abrindo janela do back-end...
 start "Mecanica Menezes - Back-end" cmd /k "cd /d ""%CD%\backoficina"" && set SERVER_ADDRESS=0.0.0.0&& set SERVER_PORT=8080&& set CORS_ALLOWED_ORIGINS=http://localhost:4200,http://%LOCAL_IP%:4200&& %BACK_COMMAND%"
 
 echo Abrindo janela do front-end estatico...
-start "Mecanica Menezes - Front-end" cmd /k "cd /d ""%CD%\frontOficina\dist\frontOficina\browser"" && %PYTHON_CMD%"
+start "Mecanica Menezes - Front-end" cmd /k "cd /d ""%CD%\frontOficina"" && %PYTHON_CMD%"
 
 echo.
 echo Sistema solicitado para iniciar.
@@ -132,3 +136,6 @@ if not errorlevel 1 (
   )
 )
 exit /b 0
+
+
+
